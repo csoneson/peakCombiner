@@ -155,7 +155,6 @@ filter_regions <- function(data,
   ### Define parameters
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   ## Pass data into new variable
   data_filtered <- data

@@ -22,7 +22,6 @@ cr_disjoin_filter <- function(data,
   ### Pre-Check up
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   ## Check if expansion exists
   if (!exists("data")) {
@@ -194,7 +193,6 @@ cr_reduce <- function(data) {
   ### Correct parameters & load needed variables
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   required_colnames <- c(
     "chrom", "start", "end", "width", "strand", "revmap",
@@ -307,7 +305,6 @@ cr_overlap_with_summits <- function(data,
   ### Correct parameters & load needed variables
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   required_colnames <- c(
     "chrom", "start", "end", "strand", "name", "score",
@@ -476,7 +473,6 @@ cr_add_summit <- function(data,
   ### Correct parameters & load needed variables
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   center_values <- c("nearest", "strongest", "middle")
 

@@ -386,8 +386,6 @@ filter_by_blacklist <- function(data,
 filter_by_significance <- function(data,
                                    include_above_score_cutoff = NULL) {
   ##
-  set.seed(1234)
-  ##
   if (is.null(include_above_score_cutoff)) {
     cli::cli_inform(c(
       "i" = "The argument {.arg include_above_score_cutoff} is {.val NULL}.",

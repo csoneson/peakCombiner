@@ -128,7 +128,6 @@ combine_regions <- function(data,
   ### Correct parameters & load needed variables
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   ### -----------------------------------------------------------------------###
   ### Show or hide messages
