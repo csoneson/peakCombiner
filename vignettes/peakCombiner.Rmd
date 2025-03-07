@@ -1,6 +1,6 @@
 ---
 title: "peakCombiner: The R package to curate and merge enriched genomic regions into consensus peak sets"
-author: "Markus Muckenhuber, Michael Stadler, Kathleen Sprouffske"
+author: "Markus Muckenhuber, Charlotte Soneson, Michael Stadler, Kathleen Sprouffske"
 date: "`r Sys.Date()`"
 bibliography: peakCombiner-refs.bib
 output: 
