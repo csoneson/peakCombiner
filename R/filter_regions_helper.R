@@ -460,8 +460,9 @@ filter_by_significance <- function(data,
 #'
 #' @noRd
 #'
-filter_by_top_enriched <- function(data,
-                                   include_top_n_scoring = include_top_n_scoring) {
+filter_by_top_enriched <- 
+  function(data,
+           include_top_n_scoring = include_top_n_scoring) {
   ##
   ##
   if (is.null(include_top_n_scoring)) {
