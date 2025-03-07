@@ -5,3 +5,6 @@
 .github
 inst/doc
 .Rproj
+
+#For the moment not push CITATION
+CITATION
