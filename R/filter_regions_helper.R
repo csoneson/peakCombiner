@@ -19,7 +19,6 @@ filter_by_chromosome_names <- function(data,
   ### Pre-Check up
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   ## check if input vector is numeric and if so change to character
   if (!is.character(include_by_chromosome_name) &&
@@ -170,7 +169,6 @@ filter_by_blacklist <- function(data,
   ### Define parameters
   ### -----------------------------------------------------------------------###
   ##
-  set.seed(1234)
   ##
   
   allowed_blacklist_annotations <- c("hg38", "mm10")
@@ -465,7 +463,6 @@ filter_by_significance <- function(data,
 filter_by_top_enriched <- function(data,
                                    include_top_n_scoring = include_top_n_scoring) {
   ##
-  set.seed(1234)
   ##
   if (is.null(include_top_n_scoring)) {
     cli::cli_inform(c(
