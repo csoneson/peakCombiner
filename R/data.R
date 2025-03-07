@@ -116,7 +116,7 @@
 #'
 #' @format `blacklist_hg38` A tibble with 910 rows and 3 columns:
 #'
-#' @source Downloaded from ENCODE https://www.encodeproject.org/files/ENCFF356LFX/
+#' @source Download from ENCODE https://www.encodeproject.org/files/ENCFF356LFX/
 #' @usage data(blacklist_hg38)
 "blacklist_hg38"
 
@@ -128,6 +128,6 @@
 #'
 #' @format `blacklist_mm10` A tibble with 164 rows and 3 columns:
 #'
-#' @source Downloaded from ENCODE https://www.encodeproject.org/files/ENCFF547MET/
+#' @source Download from ENCODE https://www.encodeproject.org/files/ENCFF547MET/
 #' @usage data(blacklist_mm10)
 "blacklist_mm10"
