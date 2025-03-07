@@ -56,8 +56,7 @@ Imports:
     rlang,
     stringr,
     here,
-    stats, 
-    qpdf
+    stats
 URL:
     https://github.com/novartis/peakCombiner/, 
     https://bioconductor.org/packages/peakCombiner
