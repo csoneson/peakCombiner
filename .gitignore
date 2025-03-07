@@ -5,6 +5,7 @@
 .github
 inst/doc
 .Rproj
+combpeaksr.Rproj
 
 #For the moment not push CITATION
 CITATION
