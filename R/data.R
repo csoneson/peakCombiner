@@ -108,26 +108,3 @@
 #' @usage data(syn_treatment_rep1_narrowPeak)
 "syn_treatment_rep1_narrowPeak"
 
-#' Blacklisted regions from ENCODE for human hg38
-#'
-#' BED file format with blacklisted regions for human annotation hg38 with
-#' column named "chrom", "start", and "end".
-#'
-#'
-#' @format `blacklist_hg38` A tibble with 910 rows and 3 columns:
-#'
-#' @source Download from ENCODE https://www.encodeproject.org/files/ENCFF356LFX/
-#' @usage data(blacklist_hg38)
-"blacklist_hg38"
-
-#' Blacklisted regions from ENCODE for mouse mm10
-#'
-#' BED file format with blacklisted regions for mouse annotation mm10 with
-#' column named "chrom", "start", and "end".
-#'
-#'
-#' @format `blacklist_mm10` A tibble with 164 rows and 3 columns:
-#'
-#' @source Download from ENCODE https://www.encodeproject.org/files/ENCFF547MET/
-#' @usage data(blacklist_mm10)
-"blacklist_mm10"
