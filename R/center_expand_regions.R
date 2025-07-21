@@ -60,9 +60,9 @@
 #' @param center_by   Allowed values are 'center_column' (default) or
 #'                    'midpoint'.
 #' * 'center_column' uses the value stored in the column `center` to center.
-#' * 'midpoint' replaces the value stored in the column `center` with the
-#'    mathematical mean of each genomic region (e.g., round(end - start / 2)),
-#'    which is then used.
+#' * 'midpoint' replaces the value stored in the column `center` based on the 
+#' [GenomicRanges::resize] followed by the expansion from based on the user 
+#' input.
 #'
 #' @param expand_by   Allowed values a numeric vector of length 1 or 2,
 #'                      or 'NULL' (default).
@@ -261,16 +261,18 @@ center_expand_regions <- function(data,
     )
     
     # Resize (e.g., width = 500, fix = "center")
-    gr_resized <- resize(gr, width = 2, fix = "center")
+    gr_resized <- GenomicRanges::resize(gr, width = 2, fix = "center")
     
     # Convert back to tibble
-    data_center_expand <- as_tibble(as.data.frame(gr_resized)) |>
-      dplyr::select(chrom = seqnames, 
-             start, 
-             end,
-             name, 
-             score, 
-             strand, center, sample_name) |>
+    data_center_expand <- dplyr::as_tibble(as.data.frame(gr_resized)) |>
+      dplyr::select(chrom = .data$seqnames, 
+                    .data$start, 
+                    .data$end,
+                    .data$name, 
+                    .data$score, 
+                    .data$strand, 
+                    .data$center, 
+                    .data$sample_name) |>
       dplyr::mutate(strand = ".",
                     start = .data$center - !!expand_1,
                     end = .data$center + !!expand_2) |>
