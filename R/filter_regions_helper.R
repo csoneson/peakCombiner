@@ -236,18 +236,6 @@ filter_by_blacklist <- function(data,
     length(exclude_by_blacklist) == 1) {
     exclude_by_blacklist <- tolower(exclude_by_blacklist)
 
-    # Check if the value is allowed and abort if not
-    if (!exclude_by_blacklist %in% allowed_blacklist_annotations) {
-      # show error message independent of parameter show_messages
-      options("rlib_message_verbosity" = "default")
-
-      cli::cli_abort(c(
-        "x" = "{.arg exclude_by_blacklist} value for vector of length 1
-        is not allowed.",
-        ">" = "{.arg exclude_by_blacklist} has the value
-        {.val {exclude_by_blacklist}}'.",
-        "i" = "Allowed values are {.val {c('hg38', 'mm10')}}."
-      ))
     }
 
     cli::cli_inform(c(

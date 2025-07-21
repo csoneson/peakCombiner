@@ -35,17 +35,11 @@
 #'                                    these chromosomes can be removed. If set
 #'                                    to 'NULL' (default), this step will be
 #'                                    skipped (optional).
-#' * `exclude_by_blacklist` -         Remove ENCODE-annotated blacklisted
-#'                                    regions for either human (
-#'                      [hg38](https://www.encodeproject.org/files/ENCFF356LFX/)
-#'                                    only) or mouse (
-#'                      [mm10](https://www.encodeproject.org/files/ENCFF547MET/)
-#'                                    only). Alternatively, a data frame or
-#'                                    tibble can be provided listing the genomic
-#'                                    regions to remove (having `chrom`,
-#'                                    `start`, and `end`  column names). If set
-#'                                    to 'NULL' (default), this step will be
-#'                                    skipped (optional).
+#' * `exclude_by_blacklist` -         A data frame or tibble can be provided 
+#'                                    listing the genomic regions to remove 
+#'                                    (having `chrom`, `start`, and `end` column
+#'                                    names). If set to 'NULL' (default), this 
+#'                                    step will be skipped (optional).
 #'                                    Please note that if there are not matching
 #'                                    entries in the 'chrom' columns of input
 #'                                    and blacklist, an information message is
@@ -92,8 +86,6 @@
 #'
 #' @param exclude_by_blacklist
 #'          * 'NULL' (default) - No blacklist filtering will be done.
-#'          * Single value for annotation of provided blacklists ('hg38' or
-#'            'mm10'), which uses ENCODE blacklist to filter.
 #'          * Data frame or tibble with columns `chrom`, `start`, and `end`.
 #'
 #' @param include_above_score_cutoff
@@ -139,7 +131,7 @@
 #' filter_regions(
 #'   data = data_prepared,
 #'   include_by_chromosome_name = c("chr1", "chr2", "chr4"),
-#'   exclude_by_blacklist = "hg38",
+#'   exclude_by_blacklist = NULL,
 #'   include_above_score_cutoff = 10,
 #'   include_top_n_scoring = 100,
 #'   show_messages = TRUE
