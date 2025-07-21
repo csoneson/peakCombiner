@@ -150,10 +150,7 @@ filter_by_chromosome_names <- function(data,
 #' Define if and which blacklisted regions are excluded
 #'
 #' @description
-#' Remove ENCODE-annotated blacklisted regions for either human
-#' ([hg38][https://www.encodeproject.org/files/ENCFF356LFX/]) or mouse
-#' ([mm10][https://www.encodeproject.org/files/ENCFF547MET/]). Alternatively, a
-#' data frame or tibble can be provided listing the genomic regions to remove
+#' A data frame or tibble can be provided listing the genomic regions to remove
 #' (having `chrom`, `start`, and `end`  column names). If set to 'NULL'
 #' (default), this step will be skipped.
 #'
@@ -171,7 +168,6 @@ filter_by_blacklist <- function(data,
   ##
   ##
   
-  allowed_blacklist_annotations <- c("hg38", "mm10")
   required_colnames_blacklist <- c("chrom", "start", "end")
 
   ### -----------------------------------------------------------------------###
@@ -184,7 +180,7 @@ filter_by_blacklist <- function(data,
 
     cli::cli_abort(c(
       "x" = "Parameter {.arg exclude_by_blacklist} doesn't exists.",
-      "i" = "Allowed values are {.val {c('NULL', 'hg38', 'mm10')}} or
+      "i" = "Allowed values are {.val {c('NULL')}} or
       a data frame with genomic coordinates in columns named {.field {c('chrom',
       'start', 'end')}}."
     ))
@@ -259,18 +255,6 @@ filter_by_blacklist <- function(data,
       used for filtering."
     ))
 
-    # Load the blacklist corresponding to the character parameter hg38 or mm10
-    blacklist_data <- if (exclude_by_blacklist == "hg38") {
-      blacklist_hg38  <- NULL
-      data("blacklist_hg38", package = "peakCombiner", envir = environment())
-      blacklist_hg38
-    } else if (exclude_by_blacklist == "mm10") {
-      blacklist_mm10  <- NULL
-      data("blacklist_mm10", package = "peakCombiner", envir = environment())
-      blacklist_mm10
-    } else {
-      stop("Invalid genome parameter. Please use 'hg38' or 'mm10'.")
-    }
     
   } else {
     # show error message independent of parameter show_messages

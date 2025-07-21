@@ -485,12 +485,20 @@ This is an *optional* step that can help you retain the most high-quality genomi
 
 ## Quick start
 
-As a quick first example, you can easily exclude blacklisted hg38 regions as follows.
+As a quick first example, you can easily exclude blacklisted regions as follows. We recommend using the  ENCODE-annotated blacklisted regions for either human ([hg38][https://www.encodeproject.org/files/ENCFF356LFX/]) or mouse ([mm10][https://www.encodeproject.org/files/ENCFF547MET/]). Alternatively, you can also use a data frame in bed file format as well. 
+
+```{r, eval=TRUE}
+backlist <- tibble(chrom = c("chr1"),
+                   start = c(100),
+                   end = c(1000))
+backlist
+
+```
 
 ```{r, eval=TRUE}
 data_filtered <- filter_regions(
   data = data_center_expand,
-  exclude_by_blacklist = "hg38",
+  exclude_by_blacklist = backlist,
   show_messages = FALSE
 )
 
