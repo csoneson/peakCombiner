@@ -255,7 +255,7 @@ center_expand_regions <- function(data,
     data 
     
     # Convert to GRanges
-    gr <- makeGRangesFromDataFrame(
+    gr <- GenomicRanges::makeGRangesFromDataFrame(
       df = data,
       keep.extra.columns = TRUE
     )
