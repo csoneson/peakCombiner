@@ -31,8 +31,11 @@ test_data_filtered <- peakCombiner:::filter_by_chromosome_names(
 ##
 input_colnames <- colnames(test_data_filtered)
 ##
-data(blacklist_hg38, package = "peakCombiner")
-blacklist <- blacklist_hg38
+blacklist <- backlist <- tibble::tibble(chrom = c("chr1"),
+                                start = c(100),
+                                end = c(1000))
+backlist
+
 ##
 test_data_filtered_bl <- peakCombiner:::filter_by_blacklist(
   data = test_data_filtered,
@@ -55,10 +58,7 @@ test_that("Test if function works with correct input", {
     data = test_data_filtered,
     exclude_by_blacklist = NULL
   ))
-  expect_no_error(peakCombiner:::filter_by_blacklist(
-    data = test_data_filtered,
-    exclude_by_blacklist = "hg38"
-  ))
+  
 })
 ##
 ### -----------------------------------------------------------------------###
@@ -86,15 +86,11 @@ test_that("Required parameter 'filter_by_blacklist' has expected structure", {
     data = test_data_filtered,
     exclude_by_blacklist = NULL
   ))
-  expect_no_error(peakCombiner:::filter_by_blacklist(
+  ##
+  expect_error(peakCombiner:::filter_by_blacklist(
     data = test_data_filtered,
     exclude_by_blacklist = "HG38"
   ))
-  expect_no_error(peakCombiner:::filter_by_blacklist(
-    data = test_data_filtered,
-    exclude_by_blacklist = "mm10"
-  ))
-  ##
   expect_error(peakCombiner:::filter_by_blacklist(
     data = test_data_filtered,
     filter_by_blacklist = blacklist[1:2]
@@ -163,9 +159,9 @@ test_that("Output data frame is correct", {
   expect_true(is.numeric(data$center))
   expect_true(is.character(data$sample_name))
   ##
-  expect_equal(round(mean(data$center), 0), 3168)
-  expect_identical(nrow(data), 38L)
-  expect_identical(data$start[1], 250L)
+  expect_equal(round(mean(data$center), 0), 3883.0)
+  expect_identical(nrow(data), 30L)
+  expect_identical(data$start[1], 3450L)
 })
 ##
 ### -----------------------------------------------------------------------###
