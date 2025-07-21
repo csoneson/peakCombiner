@@ -232,28 +232,12 @@ filter_by_blacklist <- function(data,
     ))
 
     blacklist_data <- exclude_by_blacklist
-  } else if (is.character(exclude_by_blacklist) &&
-    length(exclude_by_blacklist) == 1) {
-    exclude_by_blacklist <- tolower(exclude_by_blacklist)
-
-    }
-
+    } else {
     cli::cli_inform(c(
       ">" = "Blacklist for annotation {.val {exclude_by_blacklist}} will be
       used for filtering."
     ))
-
-    
-  } else {
-    # show error message independent of parameter show_messages
-    options("rlib_message_verbosity" = "default")
-
-    cli::cli_abort(c(
-      "x" = "Parameter {.arg exclude_by_blacklist} is not an accepted format",
-      "i" = "Allowed values are {.val {c('NULL', 'hg38', 'mm10')}} or
-      a data frame with genomic coordinates."
-    ))
-  }
+      } 
 
   ### -----------------------------------------------------------------------###
   ### Filter by blacklist
