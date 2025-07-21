@@ -100,7 +100,7 @@ data_center_expand <- center_expand_regions(
 
 data_filtered <- filter_regions(
   data = data_center_expand,
-  exclude_by_blacklist = "hg38",
+  exclude_by_blacklist = NULL,
   show_messages = FALSE
 )
 
@@ -511,7 +511,7 @@ You can filter based on four parameters:
 
 + `include_by_chromosome_name` - Retains only chromosomes that are in the provided vector. By not including mitochondrial, sex, or non-classical chromosomes, genomic regions found on these chromosomes can be removed. By default, this filter is not applied.
 
-+ `exclude_by_blacklist` - Remove ENCODE-annotated blacklist regions for either human ([hg38](https://www.encodeproject.org/files/ENCFF356LFX/)) or mouse ([mm10](https://www.encodeproject.org/files/ENCFF547MET/)). Alternatively, a tibble can be provided listing the genomic regions to remove (having 'chrom', 'start', and 'end' column names). By default, this filter is not applied.
++ `exclude_by_blacklist` - A tibble can be provided listing the genomic regions to remove (having 'chrom', 'start', and 'end' column names). By default, this filter is not applied.
 
 + `include_above_score_cutoff` - Single numeric value that defines the threshold above which all genomic regions will be retained based on the values in the column 'score'. The 'score' column in the `r Biocpkg("peakCombiner")` input data must be non-zero for this parameter to be useful. Recall that `prepare_input_regions` sets the ‘score’ by default if possible (e.g., it takes the value of -log10(FDR) using a 'narrowPeak' file from MACS as input). Importantly, applying this filter retains a variable number of genomic regions per sample, all having a score greater than the `include_above_score_cutoff` parameter. By default, this filter is not applied.
 
@@ -523,7 +523,7 @@ Let’s see how what happens when all four filtering options are used at once.
 filter_regions(
   data = data_center_expand,
   include_by_chromosome_name = c("chr1", "chr2", "chr4"),
-  exclude_by_blacklist = "hg38",
+  exclude_by_blacklist = NULL,
   include_above_score_cutoff = 2.5,
   include_top_n_scoring = 6,
   show_messages = TRUE
@@ -607,7 +607,7 @@ data_filtered_chr |>
 
 #### Remove blacklisted sites
 
-It is often recommended to exclude blacklisted genomic regions from your analyses, and the `exclude_by_blacklist`  parameter allows you to do that easily. Genomic regions that overlap a blacklisted region with at least 1 base are removed. We provide blacklisted regions from ENCODE for human ([hg38](https://www.encodeproject.org/files/ENCFF356LFX/)) and mouse ([mm10](https://www.encodeproject.org/files/ENCFF547MET/)). The blacklists were manually curated by ENCODE by combing several published blacklisted regions.
+It is often recommended to exclude blacklisted genomic regions from your analyses, and the `exclude_by_blacklist`  parameter allows you to do that easily. Genomic regions that overlap a blacklisted region with at least 1 base are removed. We suggest to use blacklisted regions from ENCODE for human ([hg38](https://www.encodeproject.org/files/ENCFF356LFX/)) and mouse ([mm10](https://www.encodeproject.org/files/ENCFF547MET/)). The blacklists were manually curated by ENCODE by combing several published blacklisted regions.
 
 While we recommend to use the provided ENCODE blacklists, you can alternatively provide your own blacklist as a tibble containing genomic regions with columns named 'chrom', 'start' and 'end'. In more general terms, you can use any file with genomic locations here to remove overlapping regions, for instance if you want to remove regions overlapping with promoters you can use this functions here to remove these. 
 
