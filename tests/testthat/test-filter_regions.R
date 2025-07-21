@@ -91,7 +91,7 @@ test_that("Output data frame is correct", {
   ##
   expect_equal(round(mean(data$center), 0), 2458)
   expect_identical(nrow(data), 52L)
-  expect_identical(data$start[1], 350L)
+  expect_identical(data$start[1], 350)
   ##
   test_counts_left <- test_data_filtered |>
     dplyr::group_by(sample_name) |>
@@ -109,7 +109,7 @@ test_that("Output data frame is correct for data_prepared", {
   ##
   expect_no_error(peakCombiner::filter_regions(
     data = data,
-    exclude_by_blacklist = "hg38",
+    exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
     include_top_n_scoring = NULL
@@ -117,14 +117,14 @@ test_that("Output data frame is correct for data_prepared", {
   ##
   result <- peakCombiner::filter_regions(
     data = data,
-    exclude_by_blacklist = "hg38",
+    exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
     include_top_n_scoring = NULL
   )
   ##
   expect_identical(nrow(result), 52L)
-  expect_identical(result$start[9], 301L)
+  expect_identical(result$start[9], 301)
 })
 ##
 test_that("Output data frame is correct for data_center_expand", {
@@ -133,14 +133,14 @@ test_that("Output data frame is correct for data_center_expand", {
   ##
   result <- peakCombiner::filter_regions(
     data = data,
-    exclude_by_blacklist = "hg38",
+    exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
     include_top_n_scoring = NULL
   )
   ##
   expect_identical(nrow(result), 52L)
-  expect_identical(result$start[9], 250L)
+  expect_identical(result$start[9], 250)
 })
 ##
 test_that("Output data frame is correct for data_filtered", {
@@ -148,14 +148,14 @@ test_that("Output data frame is correct for data_filtered", {
   data <- test_data_filtered
   result <- peakCombiner::filter_regions(
     data = data,
-    exclude_by_blacklist = "hg38",
+    exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
     include_top_n_scoring = NULL
   )
   ##
   expect_identical(nrow(result), 52L)
-  expect_identical(result$start[9], 250L)
+  expect_identical(result$start[2], 250)
 })
 ##
 test_that("Output data frame is correct for data_combined", {
@@ -163,14 +163,14 @@ test_that("Output data frame is correct for data_combined", {
   data <- test_data_combined
   result <- peakCombiner::filter_regions(
     data = data,
-    exclude_by_blacklist = "hg38",
+    exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
     include_top_n_scoring = NULL
   )
   ##
   expect_identical(nrow(result), 10L)
-  expect_identical(result$start[9], 250L)
+  expect_identical(result$start[9], 250)
 })
 ##
 test_that("Output data frame is correct for data_combined_ce", {
@@ -178,14 +178,14 @@ test_that("Output data frame is correct for data_combined_ce", {
   data <- test_data_combined_ce
   result <- peakCombiner::filter_regions(
     data = data,
-    exclude_by_blacklist = "hg38",
+    exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
     include_top_n_scoring = NULL
   )
   ##
   expect_identical(nrow(result), 10L)
-  expect_identical(result$start[9], 250L)
+  expect_identical(result$start[9], 250)
 })
 ##
 ### -----------------------------------------------------------------------###
