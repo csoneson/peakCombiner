@@ -38,7 +38,7 @@ restult_colnames <- colnames(test_data_center_expand)
 ##
 test_data_filtered <- peakCombiner::filter_regions(
   data = test_data_center_expand,
-  exclude_by_blacklist = "hg38", # "hg38",
+  exclude_by_blacklist = NULL,
   include_by_chromosome_name = NULL,
   include_above_score_cutoff = NULL,
   include_top_n_scoring = NULL,
@@ -273,13 +273,13 @@ test_that("Output data frame is correct for data_combined", {
   data <- test_data_combined
   result <- peakCombiner::center_expand_regions(
     data = data,
-    center_by = "center_column",
+    center_by = "midpoint",
     expand_by = NULL
   )
   ##
   expect_no_error(peakCombiner::center_expand_regions(
     data = data,
-    center_by = "center_column",
+    center_by = "midpoint",
     expand_by = NULL
   ))
   ##
@@ -288,3 +288,4 @@ test_that("Output data frame is correct for data_combined", {
 ##
 ### -----------------------------------------------------------------------###
 ##
+

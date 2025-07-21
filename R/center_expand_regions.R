@@ -251,15 +251,34 @@ center_expand_regions <- function(data,
       ">" = "Starting with defining the {.field center} of the regions from the
       {.field start} and {.field end} coordinates."
     ))
-
-    data_center_expand <-
-      data |>
-      dplyr::mutate(
-        center = round(.data$start + ((.data$end - .data$start) / 2)),
-        start = .data$center - !!expand_1,
-        end = .data$center + !!expand_2
-      ) |>
+  
+    data 
+    
+    # Convert to GRanges
+    gr <- makeGRangesFromDataFrame(
+      df = data,
+      keep.extra.columns = TRUE
+    )
+    
+    # Resize (e.g., width = 500, fix = "center")
+    gr_resized <- resize(gr, width = 2, fix = "center")
+    
+    # Convert back to tibble
+    data_center_expand <- as_tibble(as.data.frame(gr_resized)) |>
+      dplyr::select(chrom = seqnames, 
+             start, 
+             end,
+             name, 
+             score, 
+             strand, center, sample_name) |>
+      dplyr::mutate(strand = ".",
+                    start = .data$center - !!expand_1,
+                    end = .data$center + !!expand_2) |>
       dplyr::ungroup()
+      
+    # View result
+    print(data_center_expand)
+    
   }
 
   cli::cli_inform(c(
