@@ -611,6 +611,8 @@ It is often recommended to exclude blacklisted genomic regions from your analyse
 
 While we recommend to use the provided ENCODE blacklists, you can alternatively provide your own blacklist as a tibble containing genomic regions with columns named 'chrom', 'start' and 'end'. In more general terms, you can use any file with genomic locations here to remove overlapping regions, for instance if you want to remove regions overlapping with promoters you can use this functions here to remove these. 
 
+Additonally, other Bioconductor packages as [excluderages](https://www.bioconductor.org/packages/release/data/annotation/html/excluderanges.html) do also provide regions to be used within this function. 
+
 If you would like to remove blacklisted regions from multiple sources, you can run `filter_regions` repeatedly, for example first to remove the ENCODE blacklisted regions and then to remove your own blacklisted sites. We show how to do this below. 
 
 #### Filter for enrichment value
