@@ -35,7 +35,7 @@ test_data_center_expand <- peakCombiner:::center_expand_regions(
 test_data_filtered <- peakCombiner:::filter_regions(
   data = test_data_center_expand,
   include_by_chromosome_name = NULL,
-  exclude_by_blacklist = "hg38", # "hg38",
+  exclude_by_blacklist = NULL,
   include_above_score_cutoff = NULL,
   include_top_n_scoring = NULL,
   show_messages = TRUE

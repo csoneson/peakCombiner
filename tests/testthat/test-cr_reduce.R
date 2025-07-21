@@ -27,7 +27,7 @@ test_data_center_expand <- peakCombiner::center_expand_regions(
 ##
 test_data_filtered <- peakCombiner::filter_regions(
   data = test_data_center_expand,
-  exclude_by_blacklist = "hg38",
+  exclude_by_blacklist = NULL,
   include_by_chromosome_name = c("chr1", "chr10", "chr2", "chr42"),
   include_above_score_cutoff = NULL,
   include_top_n_scoring = NULL
