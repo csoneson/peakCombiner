@@ -172,7 +172,7 @@ filter_regions <- function(data,
       ">" = "Start converting and preparing data."
     ))
     
-    data_prepared <-
+    data_filtered <-
       tibble::as_tibble(data) |>
       dplyr::rename(chrom = .data$seqnames) |>
       dplyr::mutate(
@@ -191,7 +191,7 @@ filter_regions <- function(data,
     data_filtered <- data
     
   } else if (all(required_colnames %in% colnames(data))) {
-    data_prepared <- data
+    data_filtered <- data
     
     cli::cli_inform(c(
       "i" = "Provide input {.arg data} is a pre-loaded {.cls data.frame}  with
@@ -207,10 +207,6 @@ filter_regions <- function(data,
       "!" = "Please check your column names in {.arg data}."
     ))
   }
-  
-  
-  
-  
   
   ### -----------------------------------------------------------------------###
   ### Check if output format is valid
