@@ -33,7 +33,8 @@ test_data_filtered <- peakCombiner::filter_regions(
   include_by_chromosome_name = NULL,
   exclude_by_blacklist = NULL,
   include_above_score_cutoff = NULL,
-  include_top_n_scoring = NULL
+  include_top_n_scoring = NULL,
+  output_format = "tibble"
 )
 ##
 result_colnames <- colnames(test_data_filtered)
@@ -47,7 +48,8 @@ test_data_combined <- peakCombiner::combine_regions(
 test_data_combined_ce <- peakCombiner::center_expand_regions(
   data = test_data_combined,
   center_by = "center_column",
-  expand_by = NULL
+  expand_by = NULL,
+  output_format = "tibble"
 )
 ##
 ### -----------------------------------------------------------------------###

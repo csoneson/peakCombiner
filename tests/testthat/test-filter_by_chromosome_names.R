@@ -23,7 +23,8 @@ test_data_prepared <- peakCombiner::prepare_input_regions(
 test_data_center_expand <- peakCombiner::center_expand_regions(
   data = test_data_prepared,
   center_by = "center_column",
-  expand_by = NULL
+  expand_by = NULL,
+  output_format = "tibble"
 )
 ##
 input_colnames <- colnames(test_data_center_expand)

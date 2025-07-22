@@ -33,7 +33,9 @@ test_data_prepared <- peakCombiner::prepare_input_regions(
 test_data_center_expand <- peakCombiner::center_expand_regions(
   data = test_data_prepared,
   center_by = "center_column",
-  expand_by = NULL
+  output_format = "tibble",
+  expand_by = NULL,
+  show_messages = TRUE
 )
 restult_colnames <- colnames(test_data_center_expand)
 ##
@@ -43,6 +45,7 @@ test_data_filtered <- peakCombiner::filter_regions(
   include_by_chromosome_name = NULL,
   include_above_score_cutoff = NULL,
   include_top_n_scoring = NULL,
+  output_format = "tibble",
   show_messages = TRUE
 )
 ##
@@ -51,12 +54,15 @@ test_data_combined <- peakCombiner::combine_regions(
   found_in_samples = 2,
   combined_center = "nearest",
   annotate_with_input_names = TRUE,
-  combined_sample_name = "combined"
+  combined_sample_name = "combined",
+  output_format = "tibble",
+  show_messages = TRUE
 )
 ##
 test_data_combined_ce <- peakCombiner::center_expand_regions(
   data = test_data_combined,
   center_by = "center_column",
+  output_format = "tibble",
   expand_by = NULL
 )
 ### -----------------------------------------------------------------------###
@@ -67,7 +73,8 @@ testthat::test_that("Test if function works with pre-combined input", {
   testthat::expect_no_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
 })
 
@@ -75,7 +82,8 @@ testthat::test_that("Test if function works with post-combined input", {
   testthat::expect_no_error(peakCombiner::center_expand_regions(
     data = test_data_combined,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
 })
 
@@ -118,27 +126,32 @@ test_that("Required paramter 'center_by' has the expected structure/value", {
   expect_no_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = "center_Column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
   expect_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = c("center_column", "calculated_value"),
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ), "center_by")
   expect_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = "nonexisting",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ), "center_by")
   expect_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = NULL,
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ), "center_by")
   expect_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = NA,
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ), "center_by")
 })
 
@@ -148,22 +161,26 @@ testthat::test_that("Required paramter expand_by has the expected structure/valu
   testthat::expect_no_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
   testthat::expect_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = "column_value",
-    expand_by = NA
+    expand_by = NA,
+    output_format = "tibble"
   ), )
   testthat::expect_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = "column_value",
-    expand_by = c(1, 2, 3)
+    expand_by = c(1, 2, 3),
+    output_format = "tibble"
   ), )
   testthat::expect_error(peakCombiner::center_expand_regions(
     data = test_data_prepared,
     center_by = "column_value",
-    expand_by = "nonexisting"
+    expand_by = "nonexisting",
+    output_format = "tibble"
   ), )
 })
 
@@ -221,13 +238,15 @@ test_that("Output data frame is correct for data_prepared", {
   result <- peakCombiner::center_expand_regions(
     data = data,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   )
   ##
   expect_no_error(peakCombiner::center_expand_regions(
     data = data,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
   ##
   expect_identical(nrow(result), 52L)
@@ -239,13 +258,15 @@ test_that("Output data frame is correct for data_center_expand", {
   result <- peakCombiner::center_expand_regions(
     data = data,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   )
   ##
   expect_no_error(peakCombiner::center_expand_regions(
     data = data,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
   ##
   expect_identical(nrow(result), 52L)
@@ -257,13 +278,15 @@ test_that("Output data frame is correct for data_filtered", {
   result <- peakCombiner::center_expand_regions(
     data = data,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   )
   ##
   expect_no_error(peakCombiner::center_expand_regions(
     data = data,
     center_by = "center_column",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
   ##
   expect_identical(nrow(result), 52L)
@@ -275,13 +298,15 @@ test_that("Output data frame is correct for data_combined", {
   result <- peakCombiner::center_expand_regions(
     data = data,
     center_by = "midpoint",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   )
   ##
   expect_no_error(peakCombiner::center_expand_regions(
     data = data,
     center_by = "midpoint",
-    expand_by = NULL
+    expand_by = NULL,
+    output_format = "tibble"
   ))
   ##
   expect_identical(nrow(result), 10L)
