@@ -21,9 +21,9 @@ columns will be maintained.}
 'midpoint'.
 \itemize{
 \item 'center_column' uses the value stored in the column \code{center} to center.
-\item 'midpoint' replaces the value stored in the column \code{center} with the
-mathematical mean of each genomic region (e.g., round(end - start / 2)),
-which is then used.
+\item 'midpoint' replaces the value stored in the column \code{center} based on the
+\link[GenomicRanges:intra-range-methods]{GenomicRanges::resize} followed by the expansion from based on the user
+input.
 }}
 
 \item{expand_by}{Allowed values a numeric vector of length 1 or 2,
