@@ -100,6 +100,10 @@
 #'            per sample to be retained. The genomic regions are selected from
 #'            highest to lowest score, and if include_top_n_scoring > number of
 #'            regions, then no filtering is done.
+#'            
+#' @param output_format Character value to define format of output object. 
+#'                      Accepted values are "GenomicRanges" (default), "tibble" 
+#'                      or "data.frame".  
 #'
 #' @param show_messages Logical value of TRUE (default) or FALSE. Defines if
 #'                      info messages are displayed or not.
@@ -123,6 +127,7 @@
 #'
 #' data_prepared <- prepare_input_regions(
 #'   data = syn_data_bed,
+#'   output_format = "tibble",
 #'   show_messages = TRUE
 #' )
 #'
@@ -134,6 +139,7 @@
 #'   exclude_by_blacklist = NULL,
 #'   include_above_score_cutoff = 10,
 #'   include_top_n_scoring = 100,
+#'   output_format = "tibble",
 #'   show_messages = TRUE
 #' )
 #'
@@ -142,6 +148,7 @@ filter_regions <- function(data,
                            exclude_by_blacklist = NULL,
                            include_above_score_cutoff = NULL,
                            include_top_n_scoring = NULL,
+                           output_format = "GenomicRanges",
                            show_messages = TRUE) {
   ### -----------------------------------------------------------------------###
   ### Define parameters
@@ -149,8 +156,85 @@ filter_regions <- function(data,
   ##
   ##
   ## Pass data into new variable
-  data_filtered <- data
-
+  ### -----------------------------------------------------------------------###
+  ### Figure out what kind of input data was entered by the user and
+  ### load the initial data for follow-up quality checks
+  ### -----------------------------------------------------------------------###
+  
+  required_colnames <- c(
+    "chrom", "start", "end", "sample_name"
+  )
+  
+  if (inherits(data, "GRanges")) {
+    cli::cli_inform(c(
+      "!" = "Provided input {.arg data} is a class {.cls GRanges} and will be
+      converted to class {.cls tibble}.",
+      ">" = "Start converting and preparing data."
+    ))
+    
+    data_prepared <-
+      tibble::as_tibble(data) |>
+      dplyr::rename(chrom = .data$seqnames) |>
+      dplyr::mutate(
+        start = as.numeric(.data$start),
+        end = as.numeric(.data$end),
+        strand = as.character(.data$strand)
+      ) |>
+      dplyr::mutate(strand = ifelse(.data$strand == "*", ".", .data$strand))
+  } else if (all(required_colnames %in% colnames(data))) {
+    cli::cli_inform(c(
+      "i" = "Provide input {.arg data} is a {.cls data.frame} with three or four
+      columns and paths to existing files.",
+      ">" = "Start loading and preparing data."
+    ))
+    
+    data_filtered <- data
+    
+  } else if (all(required_colnames %in% colnames(data))) {
+    data_prepared <- data
+    
+    cli::cli_inform(c(
+      "i" = "Provide input {.arg data} is a pre-loaded {.cls data.frame}  with
+      the required column names.",
+      ">" = "Start preparing data."
+    ))
+  } else {
+    # show error independend of show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Provide input {.arg data} does not have the required format.",
+      "!" = "Please check your column names in {.arg data}."
+    ))
+  }
+  
+  
+  
+  
+  
+  ### -----------------------------------------------------------------------###
+  ### Check if output format is valid
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", 
+                           "GRanges", 
+                           "tibble", 
+                           "data.frame", 
+                           "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Argument {.arg output_format} is set to {.val {output_format}}."
+    ))
+  } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  }
+  
   ### -----------------------------------------------------------------------###
   ### Show or hide messages
   ### -----------------------------------------------------------------------###
@@ -237,8 +321,37 @@ filter_regions <- function(data,
   cli::cli_inform(c(
     "v" = "Filtered dataset will be returned."
   ))
-
-
+  
+  ### -----------------------------------------------------------------------###
+  ### Adjust output format
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", "GRanges")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val {output_format}}.")
+    )
+    
+    data_filtered <- 
+      data_filtered |>
+      GenomicRanges::makeGRangesFromDataFrame(
+        keep.extra.columns = TRUE,
+      )
+    
+  } else if (output_format %in% c("tibble", "data.frame", "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val tibble}."
+    ))
+  } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  } 
+  
   ### -----------------------------------------------------------------------###
   ### Set message display back to default
   ### -----------------------------------------------------------------------###
