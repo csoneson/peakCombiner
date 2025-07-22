@@ -124,6 +124,7 @@
 #'
 #' data_prepared <- prepare_input_regions(
 #'   data = syn_data_tibble,
+#'   output_format = "tibble",
 #'   show_messages = TRUE
 #' )
 #' data_prepared
@@ -140,6 +141,7 @@
 #'
 #' prepare_input_regions(
 #'   data = combined_input,
+#'   output_format = "tibble",
 #'   show_messages = FALSE
 #' )
 #'
@@ -190,7 +192,11 @@ prepare_input_regions <- function(
   ### Check if output format is valid
   ### -----------------------------------------------------------------------###
   
-  if (output_format %in% c("GenomicRanges", "GRanges", "tibble", "data.frame", "data.table")) {
+  if (output_format %in% c("GenomicRanges", 
+                           "GRanges", 
+                           "tibble", 
+                           "data.frame", 
+                           "data.table")) {
     cli::cli_inform(c(
       "i" = "Argument {.arg output_format} is set to {.val {output_format}}."
     ))
