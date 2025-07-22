@@ -98,6 +98,10 @@
 #' * in memory GRanges object listing the peaks themselves that are found in
 #'   each sample.
 #'
+#' @param output_format Character value to define format of output object. 
+#'                      Accepted values are "GenomicRanges" (default), "tibble" 
+#'                      or "data.frame".  
+#'
 #' @param show_messages Logical value of TRUE (default) or FALSE. Defines if
 #'                      info messages are displayed or not.
 #'
@@ -139,7 +143,11 @@
 #'   show_messages = FALSE
 #' )
 #'
-prepare_input_regions <- function(data, show_messages = TRUE) {
+prepare_input_regions <- function(
+    data, 
+    output_format = "GenomicRanges",
+    show_messages = TRUE
+    ) {
   ### -----------------------------------------------------------------------###
   ### Define variables
   ### -----------------------------------------------------------------------###
@@ -177,7 +185,26 @@ prepare_input_regions <- function(data, show_messages = TRUE) {
       "x" = "Argument {.arg data} does not exist."
     ))
   }
+  
+  ### -----------------------------------------------------------------------###
+  ### Check if output format is valid
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", "GRanges", "tibble", "data.frame", "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Argument {.arg output_format} is set to {.val {output_format}}."
+    ))
+  } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
 
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  }
+  
   ### -----------------------------------------------------------------------###
   ### Show or hide messages
   ### -----------------------------------------------------------------------###
@@ -414,6 +441,36 @@ prepare_input_regions <- function(data, show_messages = TRUE) {
   if (isFALSE(show_messages)) {
     options("rlib_message_verbosity" = "default")
   }
+  
+  ### -----------------------------------------------------------------------###
+  ### Adjust output format
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", "GRanges")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val {output_format}}.")
+      )
+    
+    data_prepared <- 
+      data_prepared |>
+      GenomicRanges::makeGRangesFromDataFrame(
+        keep.extra.columns = TRUE,
+      )
+    
+  } else if (output_format %in% c("tibble", "data.frame", "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val tibble}."
+    ))
+    } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
 
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  } 
+      
   return(data_prepared)
 }
