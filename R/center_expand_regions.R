@@ -165,6 +165,58 @@ center_expand_regions <- function(data,
   }
   
   ### -----------------------------------------------------------------------###
+  ### Figure out what kind of input data was entered by the user and
+  ### load the initial data for follow-up quality checks
+  ### -----------------------------------------------------------------------###
+  
+  required_colnames <- c(
+    "chrom", "start", "end", "sample_name"
+  )
+  
+  if (inherits(data, "GRanges")) {
+    cli::cli_inform(c(
+      "!" = "Provided input {.arg data} is a class {.cls GRanges} and will be
+      converted to class {.cls tibble}.",
+      ">" = "Start converting and preparing data."
+    ))
+    
+    data_filtered <-
+      tibble::as_tibble(data) |>
+      dplyr::rename(chrom = .data$seqnames) |>
+      dplyr::mutate(
+        start = as.numeric(.data$start),
+        end = as.numeric(.data$end),
+        strand = as.character(.data$strand)
+      ) |>
+      dplyr::mutate(strand = ifelse(.data$strand == "*", ".", .data$strand))
+  } else if (all(required_colnames %in% colnames(data))) {
+    cli::cli_inform(c(
+      "i" = "Provide input {.arg data} is a {.cls data.frame} with three or four
+      columns and paths to existing files.",
+      ">" = "Start loading and preparing data."
+    ))
+    
+    data_filtered <- data
+    
+  } else if (all(required_colnames %in% colnames(data))) {
+    data_filtered <- data
+    
+    cli::cli_inform(c(
+      "i" = "Provide input {.arg data} is a pre-loaded {.cls data.frame}  with
+      the required column names.",
+      ">" = "Start preparing data."
+    ))
+  } else {
+    # show error independend of show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Provide input {.arg data} does not have the required format.",
+      "!" = "Please check your column names in {.arg data}."
+    ))
+  }
+  
+  ### -----------------------------------------------------------------------###
   ### Show or hide messages
   ### -----------------------------------------------------------------------###
 
