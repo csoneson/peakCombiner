@@ -81,6 +81,10 @@
 #'                          `expand_by` value. It calculates the median
 #'                          genomic region size of the input data and uses this
 #'                          value like a length 1 numeric vector for expansion.
+#'            
+#' @param output_format Character value to define format of output object. 
+#'                      Accepted values are "GenomicRanges" (default), "tibble" 
+#'                      or "data.frame".  
 #'
 #' @param show_messages Logical value of TRUE (default) or FALSE. Defines if
 #'                      info messages are displayed or not.
@@ -105,6 +109,7 @@
 #' # Prepare input data
 #' data_prepared <- prepare_input_regions(
 #'   data = syn_data_bed,
+#'   output_format = "tibble",
 #'   show_messages = TRUE
 #' )
 #' # Run center and expand
@@ -112,6 +117,7 @@
 #'   data = data_prepared,
 #'   center_by = "center_column",
 #'   expand_by = NULL,
+#'   output_format = "tibble",
 #'   show_messages = TRUE
 #' )
 #'
@@ -123,6 +129,7 @@
 #'   data = data_prepared,
 #'   center_by = "midpoint",
 #'   expand_by = c(100, 600),
+#'   output_format = "tibble",
 #'   show_messages = FALSE
 #' )
 #'
@@ -131,7 +138,32 @@
 center_expand_regions <- function(data,
                                   center_by = "center_column",
                                   expand_by = NULL,
+                                  output_format = "GenomicRanges",
                                   show_messages = TRUE) {
+  
+  ### -----------------------------------------------------------------------###
+  ### Check if output format is valid
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", 
+                           "GRanges", 
+                           "tibble", 
+                           "data.frame", 
+                           "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Argument {.arg output_format} is set to {.val {output_format}}."
+    ))
+  } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  }
+  
   ### -----------------------------------------------------------------------###
   ### Show or hide messages
   ### -----------------------------------------------------------------------###
@@ -320,7 +352,37 @@ center_expand_regions <- function(data,
     "v" = "Genomic regions were successfully centered and expanded.",
     " " = " "
   ))
-
+  
+  ### -----------------------------------------------------------------------###
+  ### Adjust output format
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", "GRanges")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val {output_format}}.")
+    )
+    
+    data_center_expand <- 
+      data_center_expand |>
+      GenomicRanges::makeGRangesFromDataFrame(
+        keep.extra.columns = TRUE,
+      )
+    
+  } else if (output_format %in% c("tibble", "data.frame", "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val tibble}."
+    ))
+  } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  } 
+  
   ### -----------------------------------------------------------------------###
   ### Set message display back to default
   ### -----------------------------------------------------------------------###
