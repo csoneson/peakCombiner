@@ -82,6 +82,10 @@
 #'                               concatenate all input
 #'                               sample_names into a single comma-separated
 #'                               string
+#'            
+#' @param output_format Character value to define format of output object. 
+#'                      Accepted values are "GenomicRanges" (default), "tibble" 
+#'                      or "data.frame".  
 #'
 #' @param show_messages Logical value of TRUE (default) or FALSE. Defines if
 #'                      info messages are displayed or not.
@@ -105,6 +109,7 @@
 #'
 #' data_prepared <- prepare_input_regions(
 #'   data = syn_data_bed,
+#'   output_format = "tibble",
 #'   show_messages = FALSE
 #' )
 #'
@@ -115,6 +120,7 @@
 #'   combined_center = "nearest",
 #'   annotate_with_input_names = TRUE,
 #'   combined_sample_name = "consensus",
+#'   output_format = "tibble",
 #'   show_messages = TRUE
 #' )
 #'
@@ -123,11 +129,35 @@ combine_regions <- function(data,
                             combined_center = "nearest",
                             annotate_with_input_names = FALSE,
                             combined_sample_name = NULL,
+                            output_format = "GenomicRanges",
                             show_messages = TRUE) {
   ### -----------------------------------------------------------------------###
   ### Correct parameters & load needed variables
   ### -----------------------------------------------------------------------###
   ##
+  ### -----------------------------------------------------------------------###
+  ### Check if output format is valid
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", 
+                           "GRanges", 
+                           "tibble", 
+                           "data.frame", 
+                           "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Argument {.arg output_format} is set to {.val {output_format}}."
+    ))
+  } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  }
+  
   ##
   ### -----------------------------------------------------------------------###
   ### Show or hide messages
@@ -217,7 +247,37 @@ combine_regions <- function(data,
     "v" = "Genomic regions were successfully combined.",
     " " = " "
   ))
-
+  
+  ### -----------------------------------------------------------------------###
+  ### Adjust output format
+  ### -----------------------------------------------------------------------###
+  
+  if (output_format %in% c("GenomicRanges", "GRanges")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val {output_format}}.")
+    )
+    
+    data_combined_with_summit <- 
+      data_combined_with_summit |>
+      GenomicRanges::makeGRangesFromDataFrame(
+        keep.extra.columns = TRUE,
+      )
+    
+  } else if (output_format %in% c("tibble", "data.frame", "data.table")) {
+    cli::cli_inform(c(
+      "i" = "Output format is set to {.val tibble}."
+    ))
+  } else {
+    # show error message independent of parameter show_messages
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_abort(c(
+      "x" = "Argument {.arg output_format} has to be one of the following
+      values: {.val GenomicRanges}, {.val tibble}, or {.val data.frame}.",
+      "i" = "Provided value is {.val {output_format}}."
+    ))
+  } 
+  
   ### -----------------------------------------------------------------------###
   ### Set message display back to default
   ### -----------------------------------------------------------------------###
