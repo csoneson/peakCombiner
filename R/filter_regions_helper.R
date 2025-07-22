@@ -298,6 +298,7 @@ filter_by_blacklist <- function(data,
     dplyr::rename(chrom = "seqnames") |>
     dplyr::select(-"width") |>
     dplyr::mutate(
+      strand = ".",
       chrom = as.character(.data$chrom),
       strand = as.character(.data$strand)
     ) |>
