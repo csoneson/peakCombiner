@@ -23,6 +23,7 @@ test_data_prepared <- peakCombiner::prepare_input_regions(
 test_data_center_expand <- peakCombiner::center_expand_regions(
   data = test_data_prepared,
   center_by = "center_column",
+  output_format = "tibble",
   expand_by = NULL
 )
 ##
@@ -117,7 +118,8 @@ test_that("Output data frame is correct for data_prepared", {
     exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
-    include_top_n_scoring = NULL
+    include_top_n_scoring = NULL,
+    output_format = "tibble"
   ))
   ##
   result <- peakCombiner::filter_regions(
@@ -125,7 +127,8 @@ test_that("Output data frame is correct for data_prepared", {
     exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
-    include_top_n_scoring = NULL
+    include_top_n_scoring = NULL,
+    output_format = "tibble"
   )
   ##
   expect_identical(nrow(result), 52L)
@@ -141,7 +144,8 @@ test_that("Output data frame is correct for data_center_expand", {
     exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
-    include_top_n_scoring = NULL
+    include_top_n_scoring = NULL,
+    output_format = "tibble"
   )
   ##
   expect_identical(nrow(result), 52L)
@@ -156,7 +160,8 @@ test_that("Output data frame is correct for data_filtered", {
     exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
-    include_top_n_scoring = NULL
+    include_top_n_scoring = NULL,
+    output_format = "tibble"
   )
   ##
   expect_identical(nrow(result), 52L)
@@ -171,7 +176,8 @@ test_that("Output data frame is correct for data_combined", {
     exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
-    include_top_n_scoring = NULL
+    include_top_n_scoring = NULL,
+    output_format = "tibble"
   )
   ##
   expect_identical(nrow(result), 10L)
@@ -186,7 +192,8 @@ test_that("Output data frame is correct for data_combined_ce", {
     exclude_by_blacklist = NULL,
     include_by_chromosome_name = NULL,
     include_above_score_cutoff = NULL,
-    include_top_n_scoring = NULL
+    include_top_n_scoring = NULL,
+    output_format = "tibble"
   )
   ##
   expect_identical(nrow(result), 10L)
