@@ -42,6 +42,7 @@ result_colnames <- colnames(test_data_filtered)
 test_data_combined <- peakCombiner::combine_regions(
   data = test_data_filtered,
   found_in_samples = 2,
+  output_format = "tibble",
   combined_center = "nearest"
 )
 ##
