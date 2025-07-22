@@ -16,7 +16,9 @@ data(syn_data_bed, package = "peakCombiner")
 samplesheet_test <- syn_data_bed
 
 test_sample_sheet <- peakCombiner::prepare_input_regions(
-  data = samplesheet_test[1, ]
+  data = samplesheet_test[1, ],
+  output_format = "tibble",
+  show_messages = FALSE
 )
 
 data(syn_data_tibble, package = "peakCombiner")
@@ -24,18 +26,53 @@ test_data <- syn_data_tibble
 input_colnames <- colnames(test_data)
 
 test_data_prepared <- peakCombiner::prepare_input_regions(
-  data = test_data
+  data = test_data,
+  output_format = "tibble",
+  show_messages = FALSE
 )
 
 restult_colnames <- colnames(test_data_prepared)
 
+##
+### -----------------------------------------------------------------------###
+### Test input
+### -----------------------------------------------------------------------###
+##
+test_that("Test if output is a GenomicRanges object", {
+  expect_no_error(
+    peakCombiner::prepare_input_regions(
+    data = test_data,
+    output_format = "GenomicRanges",
+    ) |> inherits( "GenomicRanges")
+  ) 
+})
+
+
+test_that("Test if function works with correct input", {
+  expect_no_error(
+    tibble::is_tibble(peakCombiner::prepare_input_regions(
+    data = test_data,
+    output_format = "tibble",
+    show_messages = FALSE
+    )
+  ))
+})
+test_that("Test if function works with correct input", {
+  expect_error(peakCombiner::prepare_input_regions(
+    data = test_data,
+    output_format = "BED",
+    show_messages = FALSE
+  ))
+})
 ### -----------------------------------------------------------------------###
 ### Test input
 ### -----------------------------------------------------------------------###
 ### Test pre-loaded data frame
 test_that("Test if function works with correct input", {
   expect_no_error(peakCombiner::prepare_input_regions(
-    data = test_data
+    data = test_data,
+    output_format = "tibble",
+    show_messages = FALSE
   ))
 })
 

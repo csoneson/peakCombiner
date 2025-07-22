@@ -26,7 +26,8 @@ data(syn_data_bed, package = "peakCombiner")
 test_data <- syn_data_bed
 ##
 test_data_prepared <- peakCombiner::prepare_input_regions(
-  data = test_data
+  data = test_data,
+  output_format = "tibble"
 )
 ##
 test_data_center_expand <- peakCombiner::center_expand_regions(

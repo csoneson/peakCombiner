@@ -22,6 +22,7 @@ test_data
 
 test_data_prepared <- peakCombiner:::prepare_input_regions(
   data = test_data,
+  output_format = "tibble",
   show_messages = TRUE
 )
 

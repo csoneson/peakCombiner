@@ -15,7 +15,9 @@ test_data <- syn_data_tibble
 input_colnames <- colnames(test_data)
 ##
 test_data_prepared <- peakCombiner::prepare_input_regions(
-  data = test_data
+  data = test_data,
+  output_format = "tibble",
+  show_messages = FALSE
 )
 test_data_center_expand <- peakCombiner::center_expand_regions(
   data = test_data_prepared,
