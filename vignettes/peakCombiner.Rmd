@@ -90,29 +90,34 @@ syn_data_tibble
 
 data_prepared <- prepare_input_regions(
   data = syn_data_tibble,
+  output_format = "tibble",
   show_messages = FALSE
 )
 
 data_center_expand <- center_expand_regions(
   data = data_prepared,
+  output_format = "tibble",
   show_message = FALSE
 )
 
 data_filtered <- filter_regions(
   data = data_center_expand,
   exclude_by_blacklist = NULL,
+  output_format = "tibble",
   show_messages = FALSE
 )
 
 consensus_peak <- combine_regions(
   data = data_filtered,
   combined_sample_name = "my_new_sample_name",
+  output_format = "tibble",
   show_messages = FALSE
 )
 
 consensus_final <- center_expand_regions(
   data = consensus_peak,
   expand_by = 350,
+  output_format = "tibble",
   show_messages = FALSE
 )
 
@@ -178,6 +183,7 @@ combined_input |>
 ```{r, eval=TRUE}
 prepare_input_regions(
   data = combined_input,
+  output_format = "tibble",
   show_messages = FALSE
 )
 ```
@@ -199,11 +205,6 @@ The following code illustrates how you prepare an accepted sample sheet in R.
     First, let's get the paths to the peak files we want to use and save it.
 
     ```{r, eval=FALSE}
-#file_names <- list.files(
-#  paste0(here::here(), "/inst/syndata"),
-#  pattern = ".narrowPeak$",
-#  full.names = TRUE
-#)
 file_names 
     ```
 
@@ -299,6 +300,7 @@ combined_input |>
     ```{r, eval=TRUE}
 prepare_input_regions(
   data = combined_input,
+  output_format = "tibble",
   show_messages = FALSE
 )
     ```
@@ -334,6 +336,7 @@ GenomicRanges_data
     ```{r, eval=TRUE}
 prepare_input_regions(
   data = GenomicRanges_data,
+  output_format = "GenomicRanges",
   show_messages = FALSE
 )
     ```
@@ -365,6 +368,7 @@ And now we use it as input for `prepare_input_regions`.
 ```{r, eval=TRUE}
 prepare_input_regions(
   data = syn_data_bed,
+  output_format = "tibble",
   show_messages = TRUE
 )
 ```
@@ -388,6 +392,7 @@ The quickest way to get started is to call `center_expand_regions` using just th
 ```{r, eval=TRUE}
 center_expand_regions(
   data = data_prepared,
+  output_format = "tibble",
   show_message = FALSE
 )
 ```
@@ -415,6 +420,7 @@ center_expand_regions(
   data = data_prepared,
   center_by = "center_column",
   expand_by = NULL,
+  output_format = "tibble",
   show_messages = TRUE
 )
     ```
@@ -430,6 +436,7 @@ center_expand_regions(
   data = data_prepared,
   center_by = "center_column",
   expand_by = c(500),
+  output_format = "tibble",
   show_messages = FALSE
 )
 ```
@@ -439,6 +446,7 @@ center_expand_regions(
   data = data_prepared,
   center_by = "center_column",
   expand_by = c(100, 1000),
+  output_format = "tibble",
   show_messages = FALSE
 )
 ```
@@ -499,6 +507,7 @@ backlist
 data_filtered <- filter_regions(
   data = data_center_expand,
   exclude_by_blacklist = backlist,
+  output_format = "tibble",
   show_messages = FALSE
 )
 
@@ -526,6 +535,7 @@ filter_regions(
   exclude_by_blacklist = NULL,
   include_above_score_cutoff = 2.5,
   include_top_n_scoring = 6,
+  output_format = "tibble",
   show_messages = TRUE
 )
 ```
@@ -584,6 +594,7 @@ data_filtered_chr <- filter_regions(
   exclude_by_blacklist = NULL,
   include_above_score_cutoff = NULL,
   include_top_n_scoring = NULL,
+  output_format = "tibble",
   show_messages = FALSE
 )
 data_filtered_chr
@@ -633,6 +644,7 @@ See that we have very few sites with low values. We use a cutoff of 35 to remove
 data_filtered_cutoff <- filter_regions(
   data = data_center_expand,
   include_above_score_cutoff = 35,
+  output_format = "tibble",
   show_messages = FALSE
 )
 ```
@@ -672,6 +684,7 @@ data_center_expand |>
 filter_regions(
   data = data_center_expand,
   include_top_n_scoring = 8,
+  output_format = "tibble",
   show_messages = FALSE
 ) |>
   dplyr::group_by(sample_name) |>
@@ -693,6 +706,7 @@ Following is a quick example that uses default parameters.
 combine_regions(
   data = data_filtered,
   combined_sample_name = "my_new_sample_name",
+  output_format = "tibble",
   show_message = FALSE
 )
 ```
@@ -714,6 +728,7 @@ consensus_peak_list <- combine_regions(
   combined_center = "nearest",
   annotate_with_input_names = TRUE,
   combined_sample_name = "consensus",
+  output_format = "tibble",
   show_messages = TRUE
 )
 consensus_peak_list
@@ -758,6 +773,7 @@ In general, as you increase `found_in_samples`, `r Biocpkg("peakCombiner")` will
 combine_regions(
   data = data_filtered,
   found_in_samples = 2,
+  output_format = "tibble",
   show_messages = FALSE,
   combined_sample_name = "found_in_samples_2_example"
 )
@@ -769,6 +785,7 @@ If the parameter `found_in_samples` is set to '1', this function basically merge
 combine_regions(
   data = data_filtered,
   found_in_samples = 1,
+  output_format = "tibble",
   show_messages = FALSE,
   combined_sample_name = "found_in_samples_1_example"
 )
@@ -791,6 +808,7 @@ Lets have a look at the 'center' and 'score' within the synthetic data, when set
 combine_regions(
   data = data_filtered,
   combined_center = "strongest",
+  output_format = "tibble",
   show_messages = FALSE
 ) |> dplyr::select("center", "score")
 ```
@@ -801,6 +819,7 @@ Or to 'middle'.
 combine_regions(
   data = data_filtered,
   combined_center = "middle",
+  output_format = "tibble",
   show_messages = FALSE
 ) |> dplyr::select("center", "score")
 ```
@@ -811,6 +830,7 @@ Or to 'nearest'.
 combine_regions(
   data = data_filtered,
   combined_center = "nearest",
+  output_format = "tibble",
   show_messages = FALSE
 ) |> dplyr::select("center", "score")
 ```
