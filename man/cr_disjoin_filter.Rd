@@ -25,10 +25,10 @@ A tibble with the following columns: \code{chrom}, \code{start}, \code{end},
 \code{width}, \code{strand}, \code{revmap}, \code{ranking_comb_ref}, \code{name}, \code{rowname_disjoin}.
 }
 \description{
-Helper function for main function \link{combine_regions}.
+Helper function for main function \link{combineRegions}.
 Requires in memory data frame in the standard accepted format for the
 peakCombiner package.
-For details see the details for \link{combine_regions}.
+For details see the details for \link{combineRegions}.
 }
 \details{
 Retain overlapping genomic regions that are found in at least

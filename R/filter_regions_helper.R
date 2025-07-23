@@ -6,7 +6,7 @@
 #' these chromosomes can be removed. If set to 'NULL' (default), this step will
 #' be skipped.
 #'
-#' @inheritParams filter_regions
+#' @inheritParams filterRegions
 #'
 #' @return Data frame filtered by chromosome names based on the provided
 #' parameters
@@ -154,7 +154,7 @@ filter_by_chromosome_names <- function(data,
 #' (having `chrom`, `start`, and `end`  column names). If set to 'NULL'
 #' (default), this step will be skipped.
 #'
-#' @inheritParams filter_regions
+#' @inheritParams filterRegions
 #'
 #' @return Data frame filtered by blacklist based on the provided parameters.
 #'
@@ -334,7 +334,7 @@ filter_by_blacklist <- function(data,
 #' `include_above_score_cutoff` parameter. If set to 'NULL' (default), this
 #' step will be skipped.
 #'
-#' @inheritParams filter_regions
+#' @inheritParams filterRegions
 #'
 #' @noRd
 #'
@@ -410,7 +410,7 @@ filter_by_significance <- function(data,
 #' the number of resulting regions retained may be a bit higher than the input
 #' parameter. If set to 'NULL' (default), this step will be skipped.
 #'
-#' @inheritParams filter_regions
+#' @inheritParams filterRegions
 #'
 #' @return Data frame filtered by top enriched regions based on the
 #' provided parameters.

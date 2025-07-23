@@ -17,10 +17,10 @@ A tibble with the following columns: \code{chrom}, \code{start}, \code{end},
 \code{width}, \code{strand}, \code{name}.
 }
 \description{
-Helper function for main function \link{combine_regions}.
+Helper function for main function \link{combineRegions}.
 Requires in memory data frame in the standard accepted format for the
 peakCombiner package.
-For details see the details for \link{combine_regions}.
+For details see the details for \link{combineRegions}.
 }
 \details{
 Recombine filtered genomic regions from disjoin function to create the

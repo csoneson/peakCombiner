@@ -14,13 +14,13 @@ check_data_structure(data)
 A tibble with the columns \code{chrom}, \code{start}, \code{end}, \code{name}, \code{score},
 \code{strand}, \code{center}, \code{sample_name}. The definitions of these columns are
 described in full in the Details below. Use as input for functions
-\code{\link[=center_expand_regions]{center_expand_regions()}}, \code{\link[=filter_regions]{filter_regions()}} and
-\code{\link[=combine_regions]{combine_regions()}}.
+\code{\link[=centerExpandRegions]{centerExpandRegions()}}, \code{\link[=filterRegions]{filterRegions()}} and
+\code{\link[=combineRegions]{combineRegions()}}.
 }
 \description{
 This is a general helper function for the package \pkg{peakCombiner}. Aim of
 this function is to check a data frame for the correct column names and
 classes of each column to ensure to be an accepte inpuut for functions:
-\code{\link[=center_expand_regions]{center_expand_regions()}}, \code{\link[=filter_regions]{filter_regions()}} and
-\code{\link[=combine_regions]{combine_regions()}}.
+\code{\link[=centerExpandRegions]{centerExpandRegions()}}, \code{\link[=filterRegions]{filterRegions()}} and
+\code{\link[=combineRegions]{combineRegions()}}.
 }

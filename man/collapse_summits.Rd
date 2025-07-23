@@ -14,11 +14,11 @@ collapse_summits(data)
 A tibble with the columns \code{chrom}, \code{start}, \code{end}, \code{name}, \code{score},
 \code{strand}, \code{center}, \code{sample_name}. The definitions of these columns are
 described in full in the Details below. Use as input for functions
-\code{\link[=center_expand_regions]{center_expand_regions()}}, \code{\link[=filter_regions]{filter_regions()}} and
-\code{\link[=combine_regions]{combine_regions()}}.
+\code{\link[=centerExpandRegions]{centerExpandRegions()}}, \code{\link[=filterRegions]{filterRegions()}} and
+\code{\link[=combineRegions]{combineRegions()}}.
 }
 \description{
-Helper function for main function \link{prepare_input_regions}.
+Helper function for main function \link{prepareInputRegions}.
 Input data is checked for multiple entries of the same genomic
 region. This can occur when using called peak files as multiple summits can
 be annotated within the same genomic regions (defined by \code{chrom}, \code{start}
@@ -26,5 +26,5 @@ and \code{end}). To avoid multiple entries, this script is checking the input fo
 multiple summits within the same regions and maintains only the strongest
 enriched (based on the values in the column \code{score}). This step is mandatory
 to quantity an optimal result.
-For details see the details for \link{prepare_input_regions}.
+For details see the details for \link{prepareInputRegions}.
 }

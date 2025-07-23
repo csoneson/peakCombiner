@@ -1,17 +1,17 @@
 #' Load in data based on provided in memory data frame
 #'
 #' @description
-#' Helper function for main function [peakCombiner::prepare_input_regions].
+#' Helper function for main function [peakCombiner::prepareInputRegions].
 #' Requires in memory data frame listing each sample's peak file location as
 #' input and uses the provided file paths to load the input files.
-#' For details see the details for [peakCombiner::prepare_input_regions].
+#' For details see the details for [peakCombiner::prepareInputRegions].
 #'
 #'
-#' @inheritParams prepare_input_regions
+#' @inheritParams prepareInputRegions
 #'
 #' @return A tibble with the columns `chrom`, `start`, `end`, `score`,
 #' `strand`, `sample_name`. This data frame has to be further modified within
-#' the function [peakCombiner::prepare_input_regions].
+#' the function [peakCombiner::prepareInputRegions].
 #'
 #'
 #' @noRd
@@ -284,7 +284,7 @@ load_input_regions <- function(data) {
 #' collapse_summits
 #'
 #' @description
-#' Helper function for main function [peakCombiner::prepare_input_regions].
+#' Helper function for main function [peakCombiner::prepareInputRegions].
 #' Input data is checked for multiple entries of the same genomic
 #' region. This can occur when using called peak files as multiple summits can
 #' be annotated within the same genomic regions (defined by `chrom`, `start`
@@ -292,7 +292,7 @@ load_input_regions <- function(data) {
 #' multiple summits within the same regions and maintains only the strongest
 #' enriched (based on the values in the column `score`). This step is mandatory
 #' to quantity an optimal result.
-#' For details see the details for [peakCombiner::prepare_input_regions].
+#' For details see the details for [peakCombiner::prepareInputRegions].
 #'
 #' @param data A tibble with the columns `chrom`, `start`, `end`, `name`,
 #' `score`, `strand`, `center`, `sample_name`.
@@ -300,8 +300,8 @@ load_input_regions <- function(data) {
 #' @return A tibble with the columns `chrom`, `start`, `end`, `name`, `score`,
 #' `strand`, `center`, `sample_name`. The definitions of these columns are
 #' described in full in the Details below. Use as input for functions
-#' [peakCombiner::center_expand_regions()], [peakCombiner::filter_regions()] and
-#' [peakCombiner::combine_regions()].
+#' [peakCombiner::centerExpandRegions()], [peakCombiner::filterRegions()] and
+#' [peakCombiner::combineRegions()].
 #'
 collapse_summits <- function(data) {
   cli::cli_inform(c(

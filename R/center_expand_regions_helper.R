@@ -6,7 +6,7 @@
 #' It calculates the median genomic region size of the input data and uses this
 #' value like a length 1 numeric vector for expansion.
 #'
-#' @inheritParams center_expand_regions
+#' @inheritParams centerExpandRegions
 #'
 #' @return A vector of length 1 to define region expansion.
 #'

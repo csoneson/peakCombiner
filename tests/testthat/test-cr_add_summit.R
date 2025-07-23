@@ -21,20 +21,20 @@ output_colnames <- c(
 data(syn_data_tibble, package = "peakCombiner")
 test_data <- syn_data_tibble
 ##
-test_data_prepared <- peakCombiner::prepare_input_regions(
+test_data_prepared <- peakCombiner::prepareInputRegions(
   data = test_data,
   output_format = "tibble",
   show_messages = FALSE
 )
 
-test_data_center_expand <- peakCombiner::center_expand_regions(
+test_data_center_expand <- peakCombiner::centerExpandRegions(
   data = test_data_prepared,
   center_by = "center_column",
   output_format = "tibble",
   expand_by = NULL
 )
 
-test_data_filtered <- peakCombiner::filter_regions(
+test_data_filtered <- peakCombiner::filterRegions(
   data = test_data_center_expand,
   exclude_by_blacklist = NULL,
   include_by_chromosome_name = c("chr1", "chr10", "chr2", "chr42"),

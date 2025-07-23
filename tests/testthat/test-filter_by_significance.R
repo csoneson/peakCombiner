@@ -14,12 +14,12 @@ data(syn_data_tibble, package = "peakCombiner")
 test_data <- syn_data_tibble
 input_colnames <- colnames(test_data)
 ##
-test_data_prepared <- peakCombiner::prepare_input_regions(
+test_data_prepared <- peakCombiner::prepareInputRegions(
   data = test_data,
   output_format = "tibble",
   show_messages = FALSE
 )
-test_data_center_expand <- peakCombiner::center_expand_regions(
+test_data_center_expand <- peakCombiner::centerExpandRegions(
   data = test_data_prepared,
   center_by = "center_column",
   expand_by = NULL,

@@ -18,7 +18,7 @@ named \code{chrom}, \code{start}, \code{end}, \code{name},
 \code{score}, \code{strand}, \code{center}, \code{sample_name}. Additional
 columns will be dropped}
 
-\item{input}{The original input file from \code{combine_regions} to extract center
+\item{input}{The original input file from \code{combineRegions} to extract center
 information}
 
 \item{combined_center}{Defines how the column 'center' will be
@@ -52,10 +52,10 @@ A tibble with the following columns: \code{chrom}, \code{start}, \code{end}, \co
 \code{score}, \code{strand}, \code{center}, \code{sample_name}.
 }
 \description{
-Helper function for main function \link{combine_regions}.
+Helper function for main function \link{combineRegions}.
 Requires in memory data frame in the standard accepted format for the
 peakCombiner package.
-For details see the details for \link{combine_regions}.
+For details see the details for \link{combineRegions}.
 }
 \details{
 As you can use the output data from this step again (e.g., to

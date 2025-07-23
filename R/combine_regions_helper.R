@@ -1,17 +1,17 @@
 #' Separate genomic regions by coverage (disjoin) and filter input regions
 #'
 #' @description
-#' Helper function for main function [peakCombiner::combine_regions].
+#' Helper function for main function [peakCombiner::combineRegions].
 #' Requires in memory data frame in the standard accepted format for the
 #' peakCombiner package.
-#' For details see the details for [peakCombiner::combine_regions].
+#' For details see the details for [peakCombiner::combineRegions].
 #'
 #' @details
 #' Retain overlapping genomic regions that are found in at least
 #' `found_in_samples` samples. In this way, you can remove rare or
 #' sample-specific regions.
 #'
-#' @inheritParams combine_regions
+#' @inheritParams combineRegions
 #'
 #' @return A tibble with the following columns: `chrom`, `start`, `end`,
 #' `width`, `strand`, `revmap`, `ranking_comb_ref`, `name`, `rowname_disjoin`.
@@ -172,17 +172,17 @@ cr_disjoin_filter <- function(data,
 #' Recombine (reduce) input regions
 #'
 #' @description
-#' Helper function for main function [peakCombiner::combine_regions].
+#' Helper function for main function [peakCombiner::combineRegions].
 #' Requires in memory data frame in the standard accepted format for the
 #' peakCombiner package.
-#' For details see the details for [peakCombiner::combine_regions].
+#' For details see the details for [peakCombiner::combineRegions].
 #'
 #' @details
 #' Recombine filtered genomic regions from disjoin function to create the
 #' consensus regions.
 #'
 #'
-#' @inheritParams combine_regions
+#' @inheritParams combineRegions
 #'
 #' @return A tibble with the following columns: `chrom`, `start`, `end`,
 #' `width`, `strand`, `name`.
@@ -280,10 +280,10 @@ cr_reduce <- function(data) {
 #' Overlap genomic regions with original summits to remove false positive
 #'
 #' @description
-#' Helper function for main function [peakCombiner::combine_regions].
+#' Helper function for main function [peakCombiner::combineRegions].
 #' Requires in memory data frame in the standard accepted format for the
 #' peakCombiner package.
-#' For details see the details for [peakCombiner::combine_regions].
+#' For details see the details for [peakCombiner::combineRegions].
 #'
 #' @details
 #' Overlapping genomic regions must contain at least one 'center' from its
@@ -291,9 +291,9 @@ cr_reduce <- function(data) {
 #' overlap might be a consequence of the expansion parameter and are likely to
 #' be false positive.
 #'
-#' @inheritParams combine_regions
+#' @inheritParams combineRegions
 #'
-#' @param input The original input file from `combine_regions` to extract center
+#' @param input The original input file from `combineRegions` to extract center
 #' information
 #'
 #' @return A tibble with the following columns: `chrom`, `start`, `end`,
@@ -429,10 +429,10 @@ cr_overlap_with_summits <- function(data,
 #' Update the center and score information
 #'
 #' @description
-#' Helper function for main function [peakCombiner::combine_regions].
+#' Helper function for main function [peakCombiner::combineRegions].
 #' Requires in memory data frame in the standard accepted format for the
 #' peakCombiner package.
-#' For details see the details for [peakCombiner::combine_regions].
+#' For details see the details for [peakCombiner::combineRegions].
 #'
 #' @details
 #' As you can use the output data from this step again (e.g., to
@@ -456,9 +456,9 @@ cr_overlap_with_summits <- function(data,
 #' In addition, the output data.frame columns `sample_name`, `name` and `score`
 #' will be updated.
 #'
-#' @inheritParams combine_regions
+#' @inheritParams combineRegions
 #'
-#' @param input The original input file from `combine_regions` to extract center
+#' @param input The original input file from `combineRegions` to extract center
 #' information
 #'
 #' @return A tibble with the following columns: `chrom`, `start`, `end`, `name`,

@@ -4,8 +4,8 @@
 #' This is a general helper function for the package \pkg{peakCombiner}. Aim of 
 #' this function is to check a data frame for the correct column names and 
 #' classes of each column to ensure to be an accepte inpuut for functions:
-#' [peakCombiner::center_expand_regions()], [peakCombiner::filter_regions()] and
-#' [peakCombiner::combine_regions()].
+#' [peakCombiner::centerExpandRegions()], [peakCombiner::filterRegions()] and
+#' [peakCombiner::combineRegions()].
 #'
 #'
 #' @param data A tibble with the columns `chrom`, `start`, `end`, `name`,
@@ -14,8 +14,8 @@
 #' @return A tibble with the columns `chrom`, `start`, `end`, `name`, `score`,
 #' `strand`, `center`, `sample_name`. The definitions of these columns are
 #' described in full in the Details below. Use as input for functions
-#' [peakCombiner::center_expand_regions()], [peakCombiner::filter_regions()] and
-#' [peakCombiner::combine_regions()].
+#' [peakCombiner::centerExpandRegions()], [peakCombiner::filterRegions()] and
+#' [peakCombiner::combineRegions()].
 #'
 check_data_structure <- function(data) {
   ### -----------------------------------------------------------------------###
