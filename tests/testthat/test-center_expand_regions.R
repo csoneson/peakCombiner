@@ -299,17 +299,20 @@ test_that("Output data frame is correct for data_combined", {
     data = data,
     center_by = "midpoint",
     expand_by = NULL,
-    output_format = "tibble"
+    output_format = "tibble",
+    show_messages = FALSE
   )
+  expect_identical(nrow(result), 10L)
+  
   ##
   expect_no_error(peakCombiner::center_expand_regions(
     data = data,
     center_by = "midpoint",
     expand_by = NULL,
-    output_format = "tibble"
+    output_format = "tibble",
+    show_messages = FALSE
   ))
   ##
-  expect_identical(nrow(result), 10L)
 })
 ##
 ### -----------------------------------------------------------------------###
