@@ -349,14 +349,14 @@ center_expand_regions <- function(data,
     
     # Convert back to tibble
     data_center_expand <- dplyr::as_tibble(as.data.frame(gr_resized)) |>
-      dplyr::select(chrom = .data$seqnames, 
-                    .data$start, 
-                    .data$end,
-                    .data$name, 
-                    .data$score, 
-                    .data$strand, 
-                    .data$center, 
-                    .data$sample_name) |>
+      dplyr::select(chrom = seqnames,
+                    "start", 
+                    "end",
+                    "name", 
+                    "score", 
+                    "strand", 
+                    "center",
+                    "sample_name") |>
       dplyr::mutate(strand = ".",
                     start = .data$center - !!expand_1,
                     end = .data$center + !!expand_2) |>
