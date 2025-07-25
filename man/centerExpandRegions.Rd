@@ -8,6 +8,8 @@ centerExpandRegions(
   data,
   center_by = "center_column",
   expand_by = NULL,
+  genome = NA,
+  trim_start = FALSE,
   output_format = "GenomicRanges",
   show_messages = TRUE
 )
@@ -46,6 +48,19 @@ the sum of the first value + the second value
 genomic region size of the input data and uses this
 value like a length 1 numeric vector for expansion.
 }}
+
+\item{genome}{Character value to define the matching genome reference to
+the input data. Default value is NA. Allows values are
+based on GenomicRanges supported genomes like "GRCh38",
+"GRCh38.p13", "Amel_HAv3.1", "WBcel235", "TAIR10.1",
+"hg38", "mm10", "rn6", "bosTau9", "canFam3", "musFur1",
+"galGal6","dm6", "ce11", and "sacCer3". Please see also
+help for \link[GenomeInfoDb:Seqinfo-class]{GenomeInfoDb::Seqinfo} for more details.}
+
+\item{trim_start}{Logical value of TRUE or FALSE (default). If TRUE, and
+no valid reference genome are provided in \code{genome},
+resulting genomic results with negative starting
+coordinates will be set to 1.}
 
 \item{output_format}{Character value to define format of output object.
 Accepted values are "GenomicRanges" (default), "tibble"
