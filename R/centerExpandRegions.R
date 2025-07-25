@@ -81,6 +81,18 @@
 #'                          `expand_by` value. It calculates the median
 #'                          genomic region size of the input data and uses this
 #'                          value like a length 1 numeric vector for expansion.
+#' @param genome      Character value to define the matching genome reference to 
+#'                      the input data. Default value is NA. Allows values are 
+#'                      based on GenomicRanges supported genomes like "GRCh38", 
+#'                      "GRCh38.p13", "Amel_HAv3.1", "WBcel235", "TAIR10.1", 
+#'                      "hg38", "mm10", "rn6", "bosTau9", "canFam3", "musFur1", 
+#'                      "galGal6","dm6", "ce11", and "sacCer3". Please see also
+#'                      help for [GenomeInfoDb::Seqinfo] for more details.
+#'
+#' @param trim_start  Logical value of TRUE or FALSE (default). If TRUE, and 
+#'                      no valid reference genome are provided in `genome`, 
+#'                      resulting genomic results with negative starting 
+#'                      coordinates will be set to 1.
 #'            
 #' @param output_format Character value to define format of output object. 
 #'                      Accepted values are "GenomicRanges" (default), "tibble" 
@@ -138,8 +150,48 @@
 centerExpandRegions <- function(data,
                                   center_by = "center_column",
                                   expand_by = NULL,
+                                  genome = NA,
+                                  trim_start = FALSE,
                                   output_format = "GenomicRanges",
                                   show_messages = TRUE) {
+  
+  ### -----------------------------------------------------------------------###
+  ### Allowed genomes from GenomicRanges
+  ### -----------------------------------------------------------------------###
+  
+  gr_genome_seqinfo <- c("GRCh38", 
+                         "GRCh38.p13", 
+                         "Amel_HAv3.1", 
+                         "WBcel235", 
+                         "TAIR10.1",
+                         "hg38", 
+                         "mm10", 
+                         "rn6", 
+                         "bosTau9", 
+                         "canFam3", 
+                         "musFur1", 
+                         "galGal6",
+                         "dm6",  
+                         "ce11", 
+                         "sacCer3")
+  
+  column_order <- colnames(data)
+  
+  if(is.na(genome)) {
+    cli::cli_inform(c(
+      "i" = "Argument {.arg output_format} is set to NA"
+    ))
+  } else if(genome %in% gr_genome_seqinfo) {
+    cli::cli_inform(c(
+      "i" = "Argument {.arg output_format} is set to {.val {genome}}."
+    ))
+  } else {
+    cli::cli_abort(c(
+      "x" = "Argument {.arg genome} has to be one of the following
+      values: {.val {gr_genome_seqinfo}}.",
+      "i" = "Provided value is {.val {genome}}."
+    ))
+  }
   
   ### -----------------------------------------------------------------------###
   ### Check if output format is valid
@@ -182,7 +234,7 @@ centerExpandRegions <- function(data,
     
     data_filtered <-
       tibble::as_tibble(data) |>
-      dplyr::rename(chrom = .data$seqnames) |>
+      dplyr::rename(chrom = "seqnames") |>
       dplyr::mutate(
         start = as.numeric(.data$start),
         end = as.numeric(.data$end),
@@ -216,6 +268,22 @@ centerExpandRegions <- function(data,
     ))
   }
   
+  ### -----------------------------------------------------------------------###
+  ### Trim start coordinates only 
+  ### -----------------------------------------------------------------------###
+  
+  if (!is.logical(trim_start)) {
+    cli::cli_abort(c(
+      "x" = "Argument {.arg trim_start} has to be {.cls logical}."
+    ))
+  } else {
+    # show error message independent of parameter trim_start
+    options("rlib_message_verbosity" = "default")
+    
+    cli::cli_inform(c(
+      "i" = "Argument {.arg trim_start} is {.val {trim_start}}."
+    ))
+  }
   ### -----------------------------------------------------------------------###
   ### Show or hide messages
   ### -----------------------------------------------------------------------###
@@ -313,87 +381,190 @@ centerExpandRegions <- function(data,
   ### -----------------------------------------------------------------------###
 
   cli::cli_inform(c(
-    ">" = "Genomic regions will be centered and expanded.",
-    " " = " "
+    ">" = "Genomic regions will be centered and expanded."
   ))
-
-  if (center_by == "center_column") {
-    cli::cli_inform(c(
-      ">" = "Starting with expanding genomic regions from the column {.field
-      center}."
-    ))
-
-    data_center_expand <-
-      data |>
-      dplyr::mutate(
-        start = .data$center - !!expand_1,
-        end = .data$center + !!expand_2
-      ) |>
-      dplyr::ungroup()
-  } else if (center_by == "midpoint") {
-    cli::cli_inform(c(
-      ">" = "Starting with defining the {.field center} of the regions from the
-      {.field start} and {.field end} coordinates."
-    ))
   
-    data 
+  if (center_by == "center_column") {
     
-    # Convert to GRanges
-    gr <- GenomicRanges::makeGRangesFromDataFrame(
-      df = data,
-      keep.extra.columns = TRUE
-    )
-    
-    # Resize (e.g., width = 500, fix = "center")
-    gr_resized <- GenomicRanges::resize(gr, width = 2, fix = "center")
-    
-    # Convert back to tibble
-    data_center_expand <- dplyr::as_tibble(as.data.frame(gr_resized)) |>
-      dplyr::select(chrom = "seqnames",
-                    "start", 
-                    "end",
-                    "name", 
-                    "score", 
-                    "strand", 
-                    "center",
-                    "sample_name") |>
-      dplyr::mutate(strand = ".",
-                    start = .data$center - !!expand_1,
-                    end = .data$center + !!expand_2) |>
-      dplyr::ungroup()
-      
-    # View result
-    print(data_center_expand)
-    
-  }
+    cli::cli_inform(c(
+      ">" = "Starting with expanding genomic regions from the column 
+      {.field center}."
+    ))
 
+    if(!is.na(genome)) {
+      
+      cli::cli_inform(c(
+        ">" = "Using {.field genome} {.val {genome}} to assign genome."
+      ))
+      
+      # Use provided genome
+      gr_genome <- GenomeInfoDb::Seqinfo(genome = genome)
+      gr_seqlevels <- GenomeInfoDb::seqlevels(gr_genome)
+      
+      # Filter not matching chromsomes
+      data_filtered <- data |>
+        dplyr::filter(.data$chrom %in% gr_seqlevels)
+      
+      # Convert to GRanges
+      data_gr <- data_filtered |>
+        dplyr::mutate(center = round(.data$center, 0),
+                      start = .data$center,
+                      end = .data$center + 1)
+      
+      gr_resized <- data_gr |>
+        GenomicRanges::makeGRangesFromDataFrame(
+        keep.extra.columns = TRUE,
+        seqinfo = gr_genome,
+        ignore.strand = FALSE
+      )
+
+      data_center_expand <- GenomicRanges::trim(
+        GenomicRanges::promoters(
+          gr_resized, 
+          upstream = expand_1, 
+          downstream = expand_2,
+          use.names = TRUE)) |>
+        suppressWarnings()
+
+    } else {
+      cli::cli_inform(c(
+        ">" = "Option {.field genome} is empty, so no genome is assigned."
+      ))
+      
+      # Convert to GRanges
+      data_gr <- data |>
+        dplyr::mutate(center = round(.data$center, 0),
+                      start = .data$center,
+                      end = .data$center + 1) 
+      
+      gr_resized <- data_gr |>
+        GenomicRanges:: makeGRangesFromDataFrame(
+          keep.extra.columns = TRUE,
+          seqinfo = NULL,
+          ignore.strand = FALSE
+        )
+      
+      data_center_expand <- GenomicRanges::promoters(gr_resized, 
+                                           upstream = expand_1, 
+                                           downstream = expand_2, 
+                                           use.names = TRUE)
+    }
+    
+    # Show information about expansion
+    cli::cli_inform(c(
+      ">" = "Expanding genomic regions from the column {.field center} by
+      {.val {expand_1}} before and {.val {expand_2}} after the center."
+    ))
+    
+    } else if (center_by == "midpoint") {
+    cli::cli_inform(c(
+      ">" = "Starting with defining the {.field center} as the midpoint of the 
+      regions from the {.field start} and {.field end} coordinates."
+    ))
+      
+      if(!is.na(genome)) {
+        cli::cli_inform(c(
+          ">" = "Using {.field genome} {.val {genome}} to assign genome."
+        ))
+        
+        gr_genome <- GenomeInfoDb::Seqinfo(genome = genome)
+        gr_seqlevels <- GenomeInfoDb::seqlevels(gr_genome)
+        
+        # Filter not matching chromsomes
+        data_filtered <- data |>
+          dplyr::filter(.data$chrom %in% gr_seqlevels)
+        
+        # Convert to GRanges
+        data_gr <- GenomicRanges::makeGRangesFromDataFrame(
+          df = data_filtered,
+          keep.extra.columns = TRUE,
+          seqinfo = gr_genome,
+          ignore.strand = FALSE
+        )
+        
+        # Expand with reference genome and trimming
+        gr_resized <- GenomicRanges::resize(data_gr, width = 2, fix = "center")
+        
+        data_center_expand <- GenomicRanges::trim(
+          GenomicRanges::promoters(gr_resized, 
+                                   upstream = expand_1, 
+                                   downstream = expand_2, 
+                                   use.names = TRUE)) |>
+          suppressWarnings()
+        
+      } else {
+        cli::cli_inform(c(
+          ">" = "Option {.field genome} is empty, so no genome is assigned."
+        ))
+        
+        # Convert to GRanges
+        data_gr <- GenomicRanges::makeGRangesFromDataFrame(
+          df = data,
+          keep.extra.columns = TRUE,
+          seqinfo = NULL,
+          ignore.strand = FALSE
+        )
+        # Resize to center
+        gr_resized <- GenomicRanges::resize(data_gr, width = 2, fix = "center")
+        
+        # Expand without reference genome, no trimming
+        data_center_expand <- GenomicRanges::promoters(gr_resized, 
+                                                       upstream = expand_1,
+                                                       downstream = expand_2,
+                                                       use.names = TRUE)
+        
+      }
+    }
+  
+  # Convert back to tibble
+  data_center_expand <- dplyr::as_tibble(as.data.frame(data_center_expand)) |>
+    dplyr::select(-"width") |>
+    dplyr::rename(chrom = "seqnames" ) |>
+    dplyr::mutate(end = .data$end +1,
+                  strand = ".",
+                  chrom = as.character(.data$chrom)) |>
+    dplyr::select(any_of(column_order))
+  
+  
+  # View result
+  print(data_center_expand)
+  
   cli::cli_inform(c(
     "v" = "Genomic regions were successfully centered and expanded.",
     " " = " "
   ))
 
-  if (any(data_center_expand$start < 1)) {
-    neg_starts <-
-      data_center_expand |>
-      dplyr::filter(.data$start < 1) |>
-      dplyr::pull(.data$name)
-
+  
+  if(isTRUE(trim_start) & is.na(genome)) {
     cli::cli_inform(c(
-      "i" = "Some newly-defined genomic regions have a {.field start}
+      "i" = "Argument {.arg trim_start} is set to {.val TRUE}.",
+      "i" = "Atgument {.arg genome} is set to NA.",
+      ">" = "Trimming start coordinates of resulting genomic regions."
+    ))
+   
+     if (any(data_center_expand$start < 1)) {
+      neg_starts <-
+        data_center_expand |>
+        dplyr::filter(.data$start < 1) |>
+        dplyr::pull(.data$name)
+      
+      cli::cli_inform(c(
+        "i" = "Some newly-defined genomic regions have a {.field start}
       coordinate below {.val 1}.",
-      ">" = "Values of {.field name} for these  site{?s}: {.val {neg_starts}}."
-    ))
-
-    data_center_expand <-
-      data_center_expand |>
-      dplyr::mutate(start = ifelse((.data$start < 1), 1, .data$start))
-
-    cli::cli_inform(c(
-      "v" = "These genomic regions were truncated to get {.field start}
+        ">" = "Values of {.field name} for these  site{?s}: {.val {neg_starts}}."
+      ))
+      
+      data_center_expand <-
+        data_center_expand |>
+        dplyr::mutate(start = ifelse((.data$start < 1), 1, .data$start))
+      
+      cli::cli_inform(c(
+        "v" = "These genomic regions were trimmed to get {.field start}
       coordinate {.val 1}."
-    ))
-
-    rm(neg_starts)
+      ))
+      
+      rm(neg_starts)
+    }
   }
 
   ### -----------------------------------------------------------------------###
