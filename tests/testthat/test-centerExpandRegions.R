@@ -35,7 +35,7 @@ test_data_center_expand <- peakCombiner::centerExpandRegions(
   center_by = "center_column",
   output_format = "tibble",
   expand_by = NULL,
-  show_messages = TRUE
+  show_messages = FALSE
 )
 restult_colnames <- colnames(test_data_center_expand)
 ##
@@ -46,7 +46,7 @@ test_data_filtered <- peakCombiner::filterRegions(
   include_above_score_cutoff = NULL,
   include_top_n_scoring = NULL,
   output_format = "tibble",
-  show_messages = TRUE
+  show_messages = FALSE
 )
 ##
 test_data_combined <- peakCombiner::combineRegions(
@@ -56,15 +56,95 @@ test_data_combined <- peakCombiner::combineRegions(
   annotate_with_input_names = TRUE,
   combined_sample_name = "combined",
   output_format = "tibble",
-  show_messages = TRUE
+  show_messages = FALSE
 )
 ##
 test_data_combined_ce <- peakCombiner::centerExpandRegions(
   data = test_data_combined,
   center_by = "center_column",
   output_format = "tibble",
-  expand_by = NULL
+  expand_by = NULL,
+  show_messages = FALSE
 )
+
+
+### -----------------------------------------------------------------------###
+### Test genome
+### -----------------------------------------------------------------------###
+
+testthat::test_that("Test if function works with genome input", {
+  testthat::expect_no_error(peakCombiner::centerExpandRegions(
+    data = test_data_prepared,
+    center_by = "center_column",
+    expand_by = NULL,
+    output_format = "tibble",
+    genome = "hg38",
+    trim_start = FALSE,
+    show_messages = FALSE
+  ))
+})
+
+testthat::test_that("Test if function works with genome input & trimming", {
+  testthat::expect_no_error(peakCombiner::centerExpandRegions(
+    data = test_data_prepared,
+    center_by = "center_column",
+    expand_by = NULL,
+    output_format = "tibble",
+    genome = "hg38",
+    trim_start = TRUE,
+    show_messages = FALSE
+  ))
+})
+
+testthat::test_that("Test if function fails with wrong genome", {
+  testthat::expect_error(peakCombiner::centerExpandRegions(
+    data = test_data_prepared,
+    center_by = "center_column",
+    expand_by = NULL,
+    output_format = "tibble",
+    genome = "HG38",
+    trim_start = TRUE,
+    show_messages = FALSE
+  ))
+})
+
+testthat::test_that("Test if function fails with wrong genome", {
+  testthat::expect_error(peakCombiner::centerExpandRegions(
+    data = test_data_prepared,
+    center_by = "center_column",
+    expand_by = NULL,
+    output_format = "tibble",
+    genome = "mm38",
+    trim_start = TRUE,
+    show_messages = FALSE
+  ))
+})
+
+testthat::test_that("Test if function fails with wrong trim", {
+  testthat::expect_error(peakCombiner::centerExpandRegions(
+    data = test_data_prepared,
+    center_by = "center_column",
+    expand_by = NULL,
+    output_format = "tibble",
+    genome = "hg38",
+    trim_start = 10,
+    show_messages = FALSE
+  ))
+})
+
+testthat::test_that("Test if function fails with wrong trim", {
+  testthat::expect_no_error(peakCombiner::centerExpandRegions(
+    data = test_data_prepared,
+    center_by = "center_column",
+    expand_by = NULL,
+    output_format = "tibble",
+    genome = NA,
+    trim_start = TRUE,
+    show_messages = FALSE
+  ))
+})
+
+
 ### -----------------------------------------------------------------------###
 ### Test input
 ### -----------------------------------------------------------------------###
@@ -74,6 +154,8 @@ testthat::test_that("Test if function works with pre-combined input", {
     data = test_data_prepared,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ))
 })
@@ -83,6 +165,8 @@ testthat::test_that("Test if function works with post-combined input", {
     data = test_data_combined,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ))
 })
@@ -127,30 +211,40 @@ test_that("Required paramter 'center_by' has the expected structure/value", {
     data = test_data_prepared,
     center_by = "center_Column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ))
   expect_error(peakCombiner::centerExpandRegions(
     data = test_data_prepared,
     center_by = c("center_column", "calculated_value"),
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ), "center_by")
   expect_error(peakCombiner::centerExpandRegions(
     data = test_data_prepared,
     center_by = "nonexisting",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ), "center_by")
   expect_error(peakCombiner::centerExpandRegions(
     data = test_data_prepared,
     center_by = NULL,
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ), "center_by")
   expect_error(peakCombiner::centerExpandRegions(
     data = test_data_prepared,
     center_by = NA,
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ), "center_by")
 })
@@ -162,24 +256,32 @@ testthat::test_that("Required paramter expand_by has the expected structure/valu
     data = test_data_prepared,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ))
   testthat::expect_error(peakCombiner::centerExpandRegions(
     data = test_data_prepared,
     center_by = "column_value",
     expand_by = NA,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ), )
   testthat::expect_error(peakCombiner::centerExpandRegions(
     data = test_data_prepared,
     center_by = "column_value",
     expand_by = c(1, 2, 3),
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ), )
   testthat::expect_error(peakCombiner::centerExpandRegions(
     data = test_data_prepared,
     center_by = "column_value",
     expand_by = "nonexisting",
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ), )
 })
@@ -205,9 +307,9 @@ test_that("Output data frame is correct for pre-combined", {
   expect_true(is.numeric(data$center))
   expect_true(is.character(data$sample_name))
   
-  expect_equal(mean(data$center), 2495.6827)
+  expect_equal(mean(data$center), 2495.1923)
   expect_identical(nrow(data), as.integer(52))
-  expect_identical(data$start[1], 100.5)
+  expect_identical(data$start[1], 100L)
 })
 
 test_that("Output data frame is correct for post-combined", {
@@ -225,9 +327,9 @@ test_that("Output data frame is correct for post-combined", {
   expect_true(is.numeric(data$score))
   expect_true(is.character(data$strand))
   expect_true(is.numeric(data$center))
-  expect_equal(mean(data$center), 2770.45)
+  expect_equal(mean(data$center), 2790.00)
   expect_identical(nrow(data), as.integer(10))
-  expect_identical(data$start[1], 200)
+  expect_identical(data$start[1], 200L)
   expect_identical(data$end[1], 900)
   expect_identical(data$end[1], 900)
 })
@@ -239,6 +341,8 @@ test_that("Output data frame is correct for data_prepared", {
     data = data,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   )
   ##
@@ -246,6 +350,8 @@ test_that("Output data frame is correct for data_prepared", {
     data = data,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ))
   ##
@@ -259,6 +365,8 @@ test_that("Output data frame is correct for data_center_expand", {
     data = data,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   )
   ##
@@ -266,6 +374,8 @@ test_that("Output data frame is correct for data_center_expand", {
     data = data,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ))
   ##
@@ -279,6 +389,8 @@ test_that("Output data frame is correct for data_filtered", {
     data = data,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   )
   ##
@@ -286,6 +398,8 @@ test_that("Output data frame is correct for data_filtered", {
     data = data,
     center_by = "center_column",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble"
   ))
   ##
@@ -299,6 +413,8 @@ test_that("Output data frame is correct for data_combined", {
     data = data,
     center_by = "midpoint",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble",
     show_messages = FALSE
   )
@@ -309,6 +425,8 @@ test_that("Output data frame is correct for data_combined", {
     data = data,
     center_by = "midpoint",
     expand_by = NULL,
+    genome = NA,
+    trim_start = FALSE,
     output_format = "tibble",
     show_messages = FALSE
   ))

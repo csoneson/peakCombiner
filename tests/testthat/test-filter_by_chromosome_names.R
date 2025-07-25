@@ -113,7 +113,7 @@ test_that("Output data frame is correct", {
   ##
   expect_equal(round(mean(data$center), 0), 3168)
   expect_identical(nrow(data), 38L)
-  expect_identical(data$start[1], 250)
+  expect_identical(data$start[1], 250L)
 })
 ##
 ### -----------------------------------------------------------------------###
