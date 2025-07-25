@@ -75,6 +75,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 BiocManager::install("peakCombiner")
 
 library("ggplot2")
+library("peakCombiner")
 ```
 
 # An overview of a complete run
