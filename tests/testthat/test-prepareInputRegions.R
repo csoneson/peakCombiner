@@ -120,6 +120,26 @@ test_that("Input column 'sample_name' is a class 'character'.", {
   expect_true(is.character(test_data$sample_name))
 })
 
+
+
+### -----------------------------------------------------------------------###
+### Test sample_sheet entry
+### -----------------------------------------------------------------------###
+
+data("syn_sample_sheet", package = "peakCombiner")
+samplesheet_test <- syn_sample_sheet
+
+syn_sample_sheet[1,4] <- "FDR"
+syn_sample_sheet
+
+test_that("Test if error when score_colname contains multiple entries", {
+  expect_error(peakCombiner::prepareInputRegions(
+    data = syn_sample_sheet,
+    output_format = "tibble",
+    show_messages = FALSE
+  ))
+})
+
 ### -----------------------------------------------------------------------###
 ### Test output
 ### -----------------------------------------------------------------------###
