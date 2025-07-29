@@ -186,7 +186,18 @@ load_input_regions <- function(data) {
     score_colname_input <- data |>
       dplyr::pull(score_colname) |>
       unique()
+    
+    if(length(score_colname_input) > 1) {
+      # show error message independent of parameter show_messages
+      options("rlib_message_verbosity" = "default")
 
+      cli::cli_abort(c(
+        "x" = "{.arg score_colname} has to be unique in {.arg data}.",
+        ">" = "Found multiple values for {.field score_colname}:",
+        ">" = "{.val {score_colname_input}}."
+      ))
+    }
+    
     file_format_colnames <- lookup_table_colnames_input |>
       dplyr::filter(.data$file_format == !!file_format) |>
       dplyr::pull(.data$colnames_pc) |>
