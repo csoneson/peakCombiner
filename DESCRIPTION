@@ -42,6 +42,7 @@ Suggests:
     devtools,
     ggplot2,
     BiocStyle,
+    BiocManager,
     usethis,
     utils
 Imports: 
