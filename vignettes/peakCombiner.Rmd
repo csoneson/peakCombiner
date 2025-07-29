@@ -44,7 +44,7 @@ The package `r Biocpkg("peakCombiner")` contains four main functions to curate a
 | [`filterRegions`][Filter regions]        | Allows you to filter your genomic regions.                            | See in section [Filter regions].
 | [`combineRegions`][Combine Regions]       | Combine overlapping genomic regions to create a single set of consensus genomic regions.              | See in section [Combine regions].
 
-Each `r Biocpkg("peakCombiner")` function has the parameter `show_messages` that by default prints feedback messages as functions run. If you plan to use `r Biocpkg("peakCombiner")` non-interactively in a workflow, you can silence these messages by setting `show_messages = FALSE`. Note that error messages will still be printed to help you to troubleshoot potential problems.
+Each `r Biocpkg("peakCombiner")` function provides the parameter `output_format` that allows you to choose the output format of the function. The accepted values are 'tibble', 'GenomicRanges', and 'data.frame'. The default value is 'tibble'. The output format is used to define the structure of the returned data, which is described in the section [Standard genomic regions format]. Additionally, the parameter `show_messages` that by default prints feedback messages as functions run. If you plan to use `r Biocpkg("peakCombiner")` non-interactively in a workflow, you can silence these messages by setting `show_messages = FALSE`. Note that error messages will still be printed to help you to troubleshoot potential problems.
 
 ## Standard genomic regions format
 The modularity of `r Biocpkg("peakCombiner")` is enabled by standardizing how the genomic regions and samples are represented in the input and output of all its functions. We chose to use a tibble because this allows you to easily plot and explore the data. 
@@ -73,16 +73,18 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 }
 
 BiocManager::install("peakCombiner")
+```
 
+```{r, eval=FALSE}
 library("ggplot2")
 library("peakCombiner")
 ```
 
 # An overview of a complete run
 Here you find an overview of a complete run of the `r Biocpkg("peakCombiner")` recommended workflow.
-```{r, eval=TRUE}
-devtools::load_all()
-#library("peakCombiner")
+```{r, eval=FALSE}
+#devtools::load_all()
+library("peakCombiner")
 ```
 
 ```{r, eval=TRUE}
@@ -97,19 +99,29 @@ data_prepared <- prepareInputRegions(
 
 data_center_expand <- centerExpandRegions(
   data = data_prepared,
+  ocenter_by = "center_column",
+  expand_by = NULL,
+  genome = NA,
+  trim_start = TRUE,
   output_format = "tibble",
-  show_message = FALSE
+  show_messages = FALSE
 )
 
 data_filtered <- filterRegions(
   data = data_center_expand,
+  include_by_chromosome_name = NULL,
   exclude_by_blacklist = NULL,
+  include_above_score_cutoff = NULL,
+  include_top_n_scoring = NULL, 
   output_format = "tibble",
   show_messages = FALSE
 )
 
 consensus_peak <- combineRegions(
   data = data_filtered,
+  found_in_samples = 2,
+  combined_center = "nearest",
+  annotate_with_input_names = FALSE,
   combined_sample_name = "my_new_sample_name",
   output_format = "tibble",
   show_messages = FALSE
@@ -125,9 +137,9 @@ consensus_final <- centerExpandRegions(
 consensus_final
 ```
 
-Please note that the message occurring during the [`filterRegions`][Filter regions] is expected if chromosome names between input sample and blacklist are not absolutely identical.
+Please note that the message occurring during the [`filterRegions`][Filter regions] is expected if chromosome names between input sample and your provided blacklist are not absolutely identical.
 
-Finally we export the resulting consensus regions tibble and save it as BED-file. To establish a classical BED-file we remove here the column names. 
+Finally we export the resulting consensus regions tibble in a data format of the users choice (GenomicRanges, tibble, data.frame), which then can be saved as BED file. 
 
 ```{r, eval=FALSE}
 rtracklayer::export.bed(consensus_final, paste0(here::here(), "/lists/consensus_regions.bed"), format = "bed")
@@ -137,13 +149,13 @@ rtracklayer::export.bed(consensus_final, paste0(here::here(), "/lists/consensus_
 # Prepare input data
 In this section, we explain how to prepare the accepted, standardized input files and how to add needed features to these files. `prepareInputRegions` is the mandatory first step to prepare your input data in the format needed for all of the following steps in `r Biocpkg("peakCombiner")` (for details see section "[Standard genomic regions format]"). This function accepts three types of input formats: 
 
-+ a tibble of genomic regions and specifically named columns, 
++ a tibble or data.frame of genomic regions and specifically named columns, 
 + a GenomicRanges object of genomic regions and specifically named columns, or 
 + a tibble (sample sheet) that specifies file paths of BED-like files for a set of samples (e.g. standard output files from peak callers like ‘narrowPeak’ files).
 
 *Please note* that the function `prepareInputRegions` also has a filtering step, which automatically checks for genomic regions with the same values in the columns 'chrom', 'start', 'end' and 'sample_name' and filters for the strongest enriched summit (based on the 'score' values) per region. Additional summits are removed. Regions from peak callers can have multiple summits annotated per enriched genomic regions. This step is *not optional*.
 
-`prepareInputRegions` returns the data that you need for all your future work as a tibble having the structure as described in the section "[Standard genomic regions format]".
+`prepareInputRegions` returns the data that you need for all your future work in a data format of your choice (GenomicRanges, tibble, data.frame). For more details see the section "[Standard genomic regions format]".
 
 ## Quick start
 This is for you if you want to jump right in with some code. 
@@ -156,7 +168,7 @@ syn_sample_sheet
 
 This is the expected structure of a sample_sheet.
 
-If you already have your BED-like region files loaded into your R session, you can alternatively provide them to `prepareInputRegions` as a single GRanges or tibble object with genomic regions and named columns (see section "[Standard genomic regions format]") that, importantly, include a unique sample identifier ('sample_name'). Here, we show as an example the tibble object.
+If you already have your BED-like region files loaded into your R session, you can alternatively provide them to `prepareInputRegions` as a single GRanges, tibble or dataframe object with genomic regions and named columns (see section "[Standard genomic regions format]") that, importantly, include a unique sample identifier ('sample_name'). Here, we show as an example the tibble object.
 
 ```{r, eval=TRUE}
 utils::data("syn_data_control01")
@@ -195,9 +207,9 @@ We recommend that you use a sample sheet to prepare your data, especially if you
 |Column name |Requirement |Column content      |Details
 |:-----------|:-----------|:-------------------|:-------------------
 |'sample_name' | required | Unique name for each input sample. | The user defines this value. Please avoid special characters (‘space’, ‘-’, etc.).
-|'path_peaks' | required  | Path to the file in which the genomic regions are stored. | For example, the path to a 'BED' or 'narrowPeak' file. Can be a relative path.
+|'file_path' | required  | Path to the file in which the genomic regions are stored. | For example, the path to a 'BED' or 'narrowPeak' file. Can be a relative path.
 |'file_format' | required | Recognized values are: 'BED', 'narrowPeak', and 'broadPeak'. | Used to correctly name columns from input files. Must be the same for all samples loaded at once.
-|'score_column' | optional | The exact name of the original column to be used as score or the number of the column having the the metric used to rank peak importance, where bigger values are more important. | If not provided, column '9' will be used for 'narrowPeak' or 'broadPeak' file formats. Column '9' corresponds to the `qValue` as described in the UCSC documentation [here](https://genome.ucsc.edu/FAQ/FAQformat.html#format12).
+|'score_colname' | optional | The exact name of the original column to be used as score or the number of the column having the the metric used to rank peak importance, where bigger values are more important. | If not provided, column '9' will be used for 'narrowPeak' or 'broadPeak' file formats. Column '9' corresponds to the `qValue` as described in the UCSC documentation [here](https://genome.ucsc.edu/FAQ/FAQformat.html#format12).
 
 The following code illustrates how you prepare an accepted sample sheet in R.
 
