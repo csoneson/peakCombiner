@@ -24,19 +24,31 @@ output_colnames_post <- c(
 ##
 data(syn_data_bed, package = "peakCombiner")
 test_data <- syn_data_bed
+
 ##
 test_data_prepared <- peakCombiner::prepareInputRegions(
   data = test_data,
-  output_format = "tibble"
+  output_format = "tibble",
+  
 )
 ##
 test_data_center_expand <- peakCombiner::centerExpandRegions(
   data = test_data_prepared,
   center_by = "center_column",
   output_format = "tibble",
-  expand_by = NULL,
+  expand_by = 200,
   show_messages = FALSE
 )
+
+test_data_center_expand <- peakCombiner::centerExpandRegions(
+  data = test_data_prepared,
+  center_by = "midpoint",
+  output_format = "tibble",
+  expand_by = 200,
+  show_messages = FALSE
+)
+
+
 restult_colnames <- colnames(test_data_center_expand)
 ##
 test_data_filtered <- peakCombiner::filterRegions(
@@ -307,9 +319,9 @@ test_that("Output data frame is correct for pre-combined", {
   expect_true(is.numeric(data$center))
   expect_true(is.character(data$sample_name))
   
-  expect_equal(mean(data$center), 2495.1923)
+  expect_equal(mean(data$center), 2495.6827)
   expect_identical(nrow(data), as.integer(52))
-  expect_identical(data$start[1], 100L)
+  expect_identical(data$start[1], 250)
 })
 
 test_that("Output data frame is correct for post-combined", {
@@ -327,11 +339,10 @@ test_that("Output data frame is correct for post-combined", {
   expect_true(is.numeric(data$score))
   expect_true(is.character(data$strand))
   expect_true(is.numeric(data$center))
-  expect_equal(mean(data$center), 2790.00)
+  expect_equal(mean(data$center), 2770.00)
   expect_identical(nrow(data), as.integer(10))
-  expect_identical(data$start[1], 200L)
-  expect_identical(data$end[1], 900)
-  expect_identical(data$end[1], 900)
+  expect_identical(data$start[1], 350L)
+  expect_identical(data$end[1], 750)
 })
 
 test_that("Output data frame is correct for data_prepared", {

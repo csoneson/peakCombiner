@@ -119,7 +119,7 @@ test_that("Output data frame is correct", {
   ##
   expect_equal(round(mean(data$center), 0), 2458)
   expect_identical(nrow(data), 52L)
-  expect_identical(data$start[1], 350L)
+  expect_identical(data$start[1], 350)
   ##
   test_counts_left <- test_data_filtered |>
     dplyr::group_by(sample_name) |>
