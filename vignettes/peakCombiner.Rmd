@@ -24,6 +24,10 @@ knitr::opts_chunk$set(
   crop = NULL # suppress "The magick package is required to crop" issue
 )
 library(BiocStyle)
+
+knitr::opts_chunk$set(echo = TRUE)
+library("peakCombiner")
+
 ```
 
 # Introduction
@@ -67,30 +71,29 @@ We recommend that you create this standard tibble using `prepareInputRegions` (s
 # Install `peakCombiner`
 `r Biocpkg("peakCombiner")` can be installed from Bioconductor using the `r CRANpkg("BiocManager")` package:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
 
 BiocManager::install("peakCombiner")
-```
 
-```{r, eval=FALSE}
 library("ggplot2")
-library("peakCombiner")
+
 ```
 
 # An overview of a complete run
 Here you find an overview of a complete run of the `r Biocpkg("peakCombiner")` recommended workflow.
-```{r, eval=FALSE}
+```{r, eval=F}
 #devtools::load_all()
-library("peakCombiner")
+#library("peakCombiner")
 ```
 
 ```{r, eval=TRUE}
 utils::data("syn_data_tibble")
-syn_data_tibble
+```
 
+```{r, eval=TRUE}
 data_prepared <- prepareInputRegions(
   data = syn_data_tibble,
   output_format = "tibble",
@@ -99,7 +102,7 @@ data_prepared <- prepareInputRegions(
 
 data_center_expand <- centerExpandRegions(
   data = data_prepared,
-  ocenter_by = "center_column",
+  center_by = "center_column",
   expand_by = NULL,
   genome = NA,
   trim_start = TRUE,
@@ -162,7 +165,7 @@ This is for you if you want to jump right in with some code.
 One of the easiest ways (and the way we recommend unless you are an advanced user) is to provide `r Biocpkg("peakCombiner")` with the list of samples and files paths for the peak files in BED-like format, and some information about the format of the peak files. 
 
 ```{r, eval=TRUE}
-utils::data("syn_sample_sheet")
+utils::data("syn_sample_sheet", package = "peakCombiner")
 syn_sample_sheet
 ```
 
@@ -171,12 +174,12 @@ This is the expected structure of a sample_sheet.
 If you already have your BED-like region files loaded into your R session, you can alternatively provide them to `prepareInputRegions` as a single GRanges, tibble or dataframe object with genomic regions and named columns (see section "[Standard genomic regions format]") that, importantly, include a unique sample identifier ('sample_name'). Here, we show as an example the tibble object.
 
 ```{r, eval=TRUE}
-utils::data("syn_data_control01")
+utils::data("syn_data_control01", package = "peakCombiner")
 syn_data_control01
 ```
 
 ```{r, eval=TRUE}
-utils::data("syn_data_treatment01")
+utils::data("syn_data_treatment01", package = "peakCombiner")
 syn_data_treatment01
 ```
 
@@ -226,7 +229,8 @@ file_names
     Next, we create a tibble (named 'sample_sheet') with the correct column names ('sample_name', 'file_path', 'file_format', 'score_colname') to load in our data.
 
     ```{r, eval=TRUE}
-sample_sheet <- peakCombiner::syn_sample_sheet
+utils::data("syn_sample_sheet", package = "peakCombiner")
+sample_sheet <- syn_sample_sheet
 
 sample_sheet
     ```
@@ -509,9 +513,9 @@ This is an *optional* step that can help you retain the most high-quality genomi
 As a quick first example, you can easily exclude blacklisted regions as follows. We recommend using the  ENCODE-annotated blacklisted regions for either human ([hg38][https://www.encodeproject.org/files/ENCFF356LFX/]) or mouse ([mm10][https://www.encodeproject.org/files/ENCFF547MET/]). Alternatively, you can also use a data frame in bed file format as well. 
 
 ```{r, eval=TRUE}
-backlist <- tibble(chrom = c("chr1"),
-                   start = c(100),
-                   end = c(1000))
+backlist <- tibble::tibble(chrom = c("chr1"),
+                           start = c(100),
+                           end = c(1000))
 backlist
 
 ```
