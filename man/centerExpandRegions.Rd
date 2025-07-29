@@ -9,7 +9,7 @@ centerExpandRegions(
   center_by = "center_column",
   expand_by = NULL,
   genome = NA,
-  trim_start = FALSE,
+  trim_start = TRUE,
   output_format = "GenomicRanges",
   show_messages = TRUE
 )
