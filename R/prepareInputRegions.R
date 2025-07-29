@@ -17,15 +17,16 @@
 #' 1. In memory data frame listing each sample's peak file location
 #'    * `sample_name` -  Unique name for each sample
 #'                       (required).
-#'    * `path_peaks` -   Path to the file in which the genomic regions are
+#'    * `file_path` -   Path to the file in which the genomic regions are
 #'                       stored. For example, the path to a bed file or
 #'                       `.narrowPeak` file (required).
 #'    * `file_format` -  The expected file format. Needed to correctly label the
 #'                       columns of the input. Acceptable values are:
 #'                       `bed`, `narrowPeak`, and `broadPeak` (required).
-#'    * `score_column` - The number of the column having the
+#'    * `score_colname` - Either column name or number of the column having the
 #'                       the metric used to rank peak importance, where bigger
-#'                       values are more important. If not provided,
+#'                       values are more important. Entries have to be identical,
+#'                       mutliple entries are not supported. If not provided,
 #'                       column 9 will be used for `.narrowPeak` or
 #'                       `.broadPeak` file formats. Column 9 corresponds to
 #'                       the `qValue` as described in the UCSC documentation
@@ -322,7 +323,7 @@ prepareInputRegions <- function(
   }
 
   ### -----------------------------------------------------------------------###
-  ## If score column does not exists, creat it
+  ## If score column does not exists, create it
   if (!any(c("score") %in% colnames(data_prepared))) {
     cli::cli_inform(c(
       "!" = "Column {.field 'score'} does not exist in {.arg data_prepared}.",
