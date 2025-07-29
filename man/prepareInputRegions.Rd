@@ -54,15 +54,16 @@ Accepted inputs are one of the three following options:
 \itemize{
 \item \code{sample_name} -  Unique name for each sample
 (required).
-\item \code{path_peaks} -   Path to the file in which the genomic regions are
+\item \code{file_path} -   Path to the file in which the genomic regions are
 stored. For example, the path to a bed file or
 \code{.narrowPeak} file (required).
 \item \code{file_format} -  The expected file format. Needed to correctly label the
 columns of the input. Acceptable values are:
 \code{bed}, \code{narrowPeak}, and \code{broadPeak} (required).
-\item \code{score_column} - The number of the column having the
+\item \code{score_colname} - Either column name or number of the column having the
 the metric used to rank peak importance, where bigger
-values are more important. If not provided,
+values are more important. Entries have to be identical,
+mutliple entries are not supported. If not provided,
 column 9 will be used for \code{.narrowPeak} or
 \code{.broadPeak} file formats. Column 9 corresponds to
 the \code{qValue} as described in the UCSC documentation
