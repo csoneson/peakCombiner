@@ -43,7 +43,7 @@ The package `r Biocpkg("peakCombiner")` contains four main functions to curate a
 
 |Function name            | What it does                                                                                          | Where to learn more
 |:-------------           |:------------                                                                                          |:---------------
-| `prepareInputRegions` | Transforms your data into the format needed by `r Biocpkg("peakCombiner")` for all following steps.    | See in section [Prepare input data].
+| [`prepareInputRegions`][Prepare input data] | Transforms your data into the format needed by `r Biocpkg("peakCombiner")` for all following steps.    | See in section [Prepare input data].
 | [`centerExpandRegions`][Center and expand regions] | Modifies your genomic regions by centering and then expanding them to a uniform size.                                   | See in section [Center and expand regions].
 | [`filterRegions`][Filter regions]        | Allows you to filter your genomic regions.                            | See in section [Filter regions].
 | [`combineRegions`][Combine Regions]       | Combine overlapping genomic regions to create a single set of consensus genomic regions.              | See in section [Combine regions].
@@ -54,7 +54,7 @@ Each `r Biocpkg("peakCombiner")` function provides the parameter `output_format`
 The modularity of `r Biocpkg("peakCombiner")` is enabled by standardizing how the genomic regions and samples are represented in the input and output of all its functions. We chose to use a tibble because this allows you to easily plot and explore the data. 
 The columns are described in the table below. Only ‘chrom’, ‘start’, ‘end’, ‘sample_name’ are required to use `r Biocpkg("peakCombiner")`, but you have more possibilities for [`centerExpandRegions`][Center and expand regions] and [`filterRegions`][Filter regions] if you can provide the optional ‘score’ and ‘center’ columns.
 If you can’t provide data for the optional columns, `prepareInputRegions` adds sensible defaults for you.
-We recommend that you create this standard tibble using `prepareInputRegions` (see section “Prepare input data”), but you can also prepare it yourself (see section "[Load from pre-loaded tibble]")
+We recommend that you use either a GenomicRanges object or a tibble using `prepareInputRegions` (see section “Prepare input data”), but you can also prepare it yourself (see section "[Load from pre-loaded tibble]")
 
 
 |Column name |Requirement |Content     |Details 
@@ -89,10 +89,12 @@ Here you find an overview of a complete run of the `r Biocpkg("peakCombiner")` r
 #library("peakCombiner")
 ```
 
+Lets use some of the provided synthetic data sets.
 ```{r, eval=TRUE}
 utils::data("syn_data_tibble")
 ```
 
+Here you have all the function in the recommended order with all available parameters.
 ```{r, eval=TRUE}
 data_prepared <- prepareInputRegions(
   data = syn_data_tibble,
@@ -158,7 +160,7 @@ In this section, we explain how to prepare the accepted, standardized input file
 
 *Please note* that the function `prepareInputRegions` also has a filtering step, which automatically checks for genomic regions with the same values in the columns 'chrom', 'start', 'end' and 'sample_name' and filters for the strongest enriched summit (based on the 'score' values) per region. Additional summits are removed. Regions from peak callers can have multiple summits annotated per enriched genomic regions. This step is *not optional*.
 
-`prepareInputRegions` returns the data that you need for all your future work in a data format of your choice (GenomicRanges, tibble, data.frame). For more details see the section "[Standard genomic regions format]".
+`prepareInputRegions` returns the data that you need for all your future work in a data format of your choice (GenomicRanges, tibble, data.frame). All these formats can be used for downstream functions of this package. For more details see the section "[Standard genomic regions format]".
 
 ## Quick start
 This is for you if you want to jump right in with some code. 
@@ -171,7 +173,7 @@ syn_sample_sheet
 
 This is the expected structure of a sample_sheet.
 
-If you already have your BED-like region files loaded into your R session, you can alternatively provide them to `prepareInputRegions` as a single GRanges, tibble or dataframe object with genomic regions and named columns (see section "[Standard genomic regions format]") that, importantly, include a unique sample identifier ('sample_name'). Here, we show as an example the tibble object.
+If you already have your BED-like region files loaded into your R session, you can alternatively provide them to `prepareInputRegions` as a single GenomicRanges, tibble or data.frame object with genomic regions and named columns (see section "[Standard genomic regions format]") that, importantly, include a unique sample identifier ('sample_name'). Here, we show as an example the tibble object.
 
 ```{r, eval=TRUE}
 utils::data("syn_data_control01", package = "peakCombiner")
@@ -242,16 +244,16 @@ sample_sheet
     Now we use the prepared tibble (sample_sheet) and add it as argument `data` into the function `prepareInputRegions`. 
 
     ```{r, eval = FALSE}
-#prepareInputRegions(
-#  data = sample_sheet,
-#  show_messages = FALSE
-#)
+prepareInputRegions(
+  data = sample_sheet,
+  show_messages = FALSE
+)
     ```
 
-This returned value is a tibble that contains all required information formatted correctly in order to use the downstream functions within `r Biocpkg("peakCombiner")`. For more information about its structure, go back to the "[Standard genomic regions format]" section. 
+This returned table is a GenomicRanges object (default) or a tibble that contains all required information formatted correctly in order to use the downstream functions within `r Biocpkg("peakCombiner")`. For more information about its structure, go back to the "[Standard genomic regions format]" section. 
 
 ## Load from pre-loaded tibble 
-If you have already been working with your genomic regions from within an R session, you may have them pre-loaded as a tibble (this section) or as a GRanges object (next section: [Load from GenomicRanges object]). This could be either that per sample one tibble exists or that you ran `r Biocpkg("peakCombiner")` before on two data sets and now want to combine these. In this section we show how you prepare your input data from pre-loaded tibbles.
+If you have already been working with your genomic regions from within an R session, you may have them pre-loaded as a tibble (this section) or as a GenomicRanges object (next section: [Load from GenomicRanges object]). This could be either that per sample one tibble exists or that you ran `r Biocpkg("peakCombiner")` before on two data sets and now want to combine these. In this section we show how you prepare your input data from pre-loaded tibbles.
 
 We start by loading in two of our synthetic data sets in 'narrowPeak' format, a common format generated by peak callers like MACS. Most BED-like files (including 'narrowPeak' files) don’t include column names in the file so you will have to name them yourself using the standard naming conventions as described by UCSC for [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) or [narrowPeak](https://genome.ucsc.edu/FAQ/FAQformat.html#format12) or [broadPeak](https://genome.ucsc.edu/FAQ/FAQformat.html#format13). As we know what to expect in each column we can name the columns correctly: 'chrom' (X1), 'start' (X2), 'end' (X3), 'name' (X4), 'score' (X5) and the 'strand' (X6). To be clear, the names that you define for the columns are used by `prepareInputRegions` to property format the data.
     
@@ -332,15 +334,15 @@ In memory GenomicRanges object listing the genomic regions in a sample. This obj
     As first step we load the provided synthetic data originating from a GenomicRanges object.
 
     ```{r, eval=TRUE}
-utils::data("syn_data_granges")
-syn_data_granges
+utils::data("syn_data_GenomicRanges")
+syn_data_GenomicRanges
     ```
     
-    The column names are based on its original GRanges file format. This allows us to easily transform it into a GRanges object. Note that normally we expect you to have the GRanges object pre-loaded and want to use the `r Biocpkg("peakCombiner")` on this data set. For the purpose of showing you how a accepted GRanges object has to be structured we transform it here.
+    The column names are based on its original GenomicRanges file format. This allows us to easily transform it into a GenomicRanges object. Note that normally we expect you to have the GenomicRanges object pre-loaded and want to use the `r Biocpkg("peakCombiner")` on this data set. For the purpose of showing you how a accepted GenomicRanges object has to be structured we transform it here.
      
     ```{r, eval=TRUE}
-GenomicRanges_data <- GenomicRanges::makeGRangesFromDataFrame(
-  syn_data_granges,
+GenomicRanges_data <- GenomicRanges::makeGenomicRangesFromDataFrame(
+  syn_data_GenomicRanges,
   keep.extra.columns = TRUE
 )
 GenomicRanges_data
@@ -348,7 +350,7 @@ GenomicRanges_data
 
 + **Prepare input from GenomicRanges object**
 
-    You can simply use your GRanges object in the parameter ‘data’ and load it in. The output tibble from `prepare_input_data` can now be used for your next steps with `r Biocpkg("peakCombiner")`. For details about the accepted file structure see section "[Standard genomic regions format]".
+    You can simply use your GenomicRanges object in the parameter ‘data’ and load it in. The output tibble from `prepare_input_data` can now be used for your next steps with `r Biocpkg("peakCombiner")`. For details about the accepted file structure see section "[Standard genomic regions format]".
     
     ```{r, eval=TRUE}
 prepareInputRegions(
@@ -369,7 +371,8 @@ Lets load a BED file.
 
 ```{r, eval=TRUE}
 utils::data("syn_data_bed")
-syn_data_bed |> dplyr::arrange(sample_name)
+syn_data_bed |> 
+  dplyr::arrange(sample_name)
 ```
 
 When we pull the 'sample_name' column we see the different number of entries for each sample name.
@@ -385,7 +388,7 @@ And now we use it as input for `prepareInputRegions`.
 ```{r, eval=TRUE}
 prepareInputRegions(
   data = syn_data_bed,
-  output_format = "tibble",
+  output_format = "data.frame",
   show_messages = TRUE
 )
 ```
@@ -409,16 +412,18 @@ The quickest way to get started is to call `centerExpandRegions` using just the 
 ```{r, eval=TRUE}
 centerExpandRegions(
   data = data_prepared,
+  center_by = "center_column",
+  expand_by = NULL,
   output_format = "tibble",
   show_message = FALSE
 )
 ```
 
-The tibble you obtained has altered coordinates for the genomic region. The center of the region is defined as the value found in the column 'center' and the expansion is based on the median region size of all input regions.
+The table you obtained has altered coordinates for the genomic region. The center of the region is defined as the value found in the column 'center' and the expansion is based on the median region size of all input regions.
 
 ## Run center and expand
 
-The expected input is the standard tibble as described previously (See section "[Standard genomic regions format]"). We suggest you prepare it with the function `prepareInputRegions`.
+The expected input can be a GenomicRanges, tibble or data.frame as described previously (See section "[Standard genomic regions format]"). We suggest you prepare it with the function `prepareInputRegions`.
 
 + **Define the new center**
 
@@ -492,7 +497,7 @@ You can also choose to expand the genomic region from the new center asymmetrica
 
 ### Correct if expanding over chromsome boarders
 
-It is theoretically possible that centering and expanding could result in a 'start' coordinate value less than 0. This of course would be invalid. If this happens, `r Biocpkg("peakCombiner")` automatically replaces the negative start value with 0 and prints feedback on how often and where this happened so you can debug if necessary. In theory the same can happen at the 'end' coordinate but we do not know the expected chromosome length and so cannot automatically check for that. If these edge cases are critical to your downstream analyses, we suggest that you double-check this.
+It is theoretically possible that centering and expanding could result in coordinate out side of the chromosomal boundaries. This of course would be invalid. Taking advantage of GenomicRanges function, the user can provide the information of the reference genome based on supported genomes by GenomicRanges (For details see the help for `centerExpandRegions`). If no genome is provided the package `r Biocpkg("peakCombiner")` has a parameter to trim the start coordinate to 0 (trim_start = TRUE). This means that if the start coordinate is negative, it is automatically replaced with 1. If you do not want this behavior, you can set `trim_start = FALSE` and the function will return the original negative value. The user gets a printed feedback on how often and where this happened so you can debug if necessary. If these edge cases are critical to your downstream analyses, we suggest that you double-check this.
 
 ### Run function mutliple times
 
@@ -510,7 +515,7 @@ This is an *optional* step that can help you retain the most high-quality genomi
 
 ## Quick start
 
-As a quick first example, you can easily exclude blacklisted regions as follows. We recommend using the  ENCODE-annotated blacklisted regions for either human ([hg38][https://www.encodeproject.org/files/ENCFF356LFX/]) or mouse ([mm10][https://www.encodeproject.org/files/ENCFF547MET/]). Alternatively, you can also use a data frame in bed file format as well. 
+As a quick first example, you can easily exclude blacklisted regions as follows. We recommend using the ENCODE-annotated blacklisted regions for either human ([hg38][https://www.encodeproject.org/files/ENCFF356LFX/]) or mouse ([mm10][https://www.encodeproject.org/files/ENCFF547MET/]). Alternatively, you can also use a data frame in bed file format as well. 
 
 ```{r, eval=TRUE}
 backlist <- tibble::tibble(chrom = c("chr1"),
@@ -549,7 +554,7 @@ Let’s see how what happens when all four filtering options are used at once.
 filterRegions(
   data = data_center_expand,
   include_by_chromosome_name = c("chr1", "chr2", "chr4"),
-  exclude_by_blacklist = NULL,
+  exclude_by_blacklist = backlist,
   include_above_score_cutoff = 2.5,
   include_top_n_scoring = 6,
   output_format = "tibble",
@@ -602,7 +607,7 @@ include_chrom <- input_chrom |>
 include_chrom
     ```
 
-Finally, we can use this vector of good names in filterRegions for the parameter `include_by_chromosome_name`
+Finally, we can use this vector of good names in `filterRegions` for the parameter `include_by_chromosome_name`
 
 ```{r, eval=TRUE}
 data_filtered_chr <- filterRegions(
@@ -639,7 +644,7 @@ It is often recommended to exclude blacklisted genomic regions from your analyse
 
 While we recommend to use the provided ENCODE blacklists, you can alternatively provide your own blacklist as a tibble containing genomic regions with columns named 'chrom', 'start' and 'end'. In more general terms, you can use any file with genomic locations here to remove overlapping regions, for instance if you want to remove regions overlapping with promoters you can use this functions here to remove these. 
 
-Additonally, other Bioconductor packages as [excluderages](https://www.bioconductor.org/packages/release/data/annotation/html/excluderanges.html) do also provide regions to be used within this function. 
+Additionally, other R packages as [excluderages](https://www.bioconductor.org/packages/release/data/annotation/html/excluderanges.html) do also provide regions to be used within this function. 
 
 If you would like to remove blacklisted regions from multiple sources, you can run `filterRegions` repeatedly, for example first to remove the ENCODE blacklisted regions and then to remove your own blacklisted sites. We show how to do this below. 
 
@@ -722,6 +727,9 @@ Following is a quick example that uses default parameters.
 ```{r, eval=TRUE}
 combineRegions(
   data = data_filtered,
+  found_in_samples = 2,
+  combined_center = "nearest",
+  annotate_with_input_names = FALSE,
   combined_sample_name = "my_new_sample_name",
   output_format = "tibble",
   show_message = FALSE
@@ -731,7 +739,7 @@ combineRegions(
 ## Run to combine regions
 We run the function `combineRegions` and give the value 'consensus' to the parameter `combined_sample_name` and we want to have the link to our input regions by setting `annotate_with_input_name` to 'TRUE'. 
 
-In brief, a description what the parameter you can define do. For more details please see below section "[Define parameter to best combine regions]". 
+In brief, a description what the specific parameter you can define do. For more details please see below section "[Define parameter to best combine regions]". 
 
 * `found_in_samples` - Defines in how many input samples a genomic site has to be found to be included into the consensus set. 
 * `combined_center` - To stay within the expected data structure of `r Biocpkg("peakCombiner")`, we add new values for 'center' and 'score' at the end of this function to make it an accepted input for [`centerExpandRegions`][Center and expand regions] and [`filterRegions`][Filter regions]. You can choose between the options 'nearest', 'strongest' or 'middle' for `combined_center`. 
@@ -762,7 +770,7 @@ Here we briefly describe what is happening under the hood.
 
 + **Recombine separated genomic regions:** 
 
-    As next step we perform `reduce`, another GRanges operation, to combine regions adjacent to each other. If regions are separated by at least a single nucelotide, we keep them separately.  
+    As next step we perform `reduce`, another GenomicRanges operation, to combine regions adjacent to each other. If regions are separated by at least a single nucelotide, we keep them separately.  
 
 + **Overlap with summits:** 
 
