@@ -68,7 +68,7 @@ We recommend that you use either a GenomicRanges object or a tibble using `prepa
 # Install `peakCombiner`
 `r Biocpkg("peakCombiner")` can be installed from Bioconductor using the `r CRANpkg("BiocManager")` package:
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
@@ -79,7 +79,6 @@ BiocManager::install("peakCombiner")
 ```{r, eval=TRUE}
 library("peakCombiner")
 library("ggplot2")
-
 ```
 
 # An overview of a complete run
