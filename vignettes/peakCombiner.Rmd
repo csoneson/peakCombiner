@@ -341,7 +341,7 @@ syn_data_granges
     The column names are based on its original GenomicRanges file format. This allows us to easily transform it into a GenomicRanges object. Note that normally we expect you to have the GenomicRanges object pre-loaded and want to use the `r Biocpkg("peakCombiner")` on this data set. For the purpose of showing you how a accepted GenomicRanges object has to be structured we transform it here.
      
     ```{r, eval=TRUE}
-GenomicRanges_data <- GenomicRanges::makeGenomicRangesFromDataFrame(
+GenomicRanges_data <- GenomicRanges::makeGRangesFromDataFrame(
   syn_data_granges,
   keep.extra.columns = TRUE
 )
