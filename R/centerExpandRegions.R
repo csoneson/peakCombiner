@@ -1,12 +1,12 @@
 #' Modifies genomic regions by centering and then expanding them
 #'
 #' @description
-#' [peakCombiner::centerExpandRegions] is an optional step that re-defines the
+#' [peakCombiner::centerExpandRegions()] is an optional step that re-defines the
 #' genomic regions by expanding them from their center. The center information
 #' has to be stored in the input data column `center`, while the information for
 #' the expansion can either be user provided or input data derived. The accepted
-#' input is a data frame created from [peakCombiner::prepareInputRegions].
-#' Please see [peakCombiner::prepareInputRegions] for more details.
+#' input is a data frame created from [peakCombiner::prepareInputRegions()].
+#' Please see [peakCombiner::prepareInputRegions()] for more details.
 #'
 #' @details
 #' This is an optional function that resizes the genomic regions based on the
@@ -37,7 +37,7 @@
 #' using pre-defined summit information (e.g., obtained from a peak caller like
 #' MACS2) or re-compute the arithmetic mean and save that value in the column
 #' `center`. (For details see the help for
-#' [peakCombiner::prepareInputRegions]).
+#' [peakCombiner::prepareInputRegions()]).
 #'
 #' ## How much to expand from the center
 #' You can choose to expand the genomic region from the center either
@@ -61,7 +61,7 @@
 #'                    'midpoint'.
 #' * 'center_column' uses the value stored in the column `center` to center.
 #' * 'midpoint' replaces the value stored in the column `center` based on the 
-#' [GenomicRanges::resize] followed by the expansion from based on the user 
+#' [GenomicRanges::resize()] followed by the expansion from based on the user 
 #' input.
 #'
 #' @param expand_by   Allowed values a numeric vector of length 1 or 2,
@@ -87,7 +87,7 @@
 #'                      "GRCh38.p13", "Amel_HAv3.1", "WBcel235", "TAIR10.1", 
 #'                      "hg38", "mm10", "rn6", "bosTau9", "canFam3", "musFur1", 
 #'                      "galGal6","dm6", "ce11", and "sacCer3". Please see also
-#'                      help for [GenomeInfoDb::Seqinfo] for more details.
+#'                      help for [GenomeInfoDb::Seqinfo()] for more details.
 #'
 #' @param trim_start  Logical value of TRUE or FALSE (default). If TRUE, and 
 #'                      no valid reference genome are provided in `genome`, 
