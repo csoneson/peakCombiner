@@ -21,11 +21,10 @@ knitr::opts_chunk$set(
   fig.height = 5,
   out.width = "80%",
   fig.align = "center",
+echo = TRUE, 
   crop = NULL # suppress "The magick package is required to crop" issue
 )
 library(BiocStyle)
-
-knitr::opts_chunk$set(echo = TRUE)
 library("peakCombiner")
 
 ```
