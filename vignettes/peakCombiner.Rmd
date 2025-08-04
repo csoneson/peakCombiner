@@ -334,15 +334,15 @@ In memory GenomicRanges object listing the genomic regions in a sample. This obj
     As first step we load the provided synthetic data originating from a GenomicRanges object.
 
     ```{r, eval=TRUE}
-utils::data("syn_data_GenomicRanges")
-syn_data_GenomicRanges
+utils::data("syn_data_granges")
+syn_data_granges
     ```
     
     The column names are based on its original GenomicRanges file format. This allows us to easily transform it into a GenomicRanges object. Note that normally we expect you to have the GenomicRanges object pre-loaded and want to use the `r Biocpkg("peakCombiner")` on this data set. For the purpose of showing you how a accepted GenomicRanges object has to be structured we transform it here.
      
     ```{r, eval=TRUE}
 GenomicRanges_data <- GenomicRanges::makeGenomicRangesFromDataFrame(
-  syn_data_GenomicRanges,
+  syn_data_granges,
   keep.extra.columns = TRUE
 )
 GenomicRanges_data
